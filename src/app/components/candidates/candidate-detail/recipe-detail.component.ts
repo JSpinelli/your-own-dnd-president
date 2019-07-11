@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Recipe } from 'src/app/shared/recipe.model';
-import { CandidateMatchService } from 'src/app/services/candidateMatch.service';
+import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
 import { ActivatedRoute, Params, Router, Data } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private candServ: CandidateService,
-    private candMatchServ: CandidateMatchService,
+    private candMatchServ: IngredientsService,
     private route: ActivatedRoute,
     private router: Router) {
 
@@ -31,7 +31,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
           this.recipeToDisplay = data.candidate;
         }
       );
-    // this.id = this.route.snapshot.params.id;
+    this.id = this.route.snapshot.params.id;
     // this.recipeToDisplay = this.candServ.candidates[this.id];
 
     // this.subscription = this.route.params.subscribe(

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -20,7 +20,7 @@ import { Authservice } from './services/auth.service';
 import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 import { CandidateResolver } from './services/candidate-resolver.service';
 import { CandidateService } from './services/candidates.service';
-import { CandidateMatchService } from './services/candidateMatch.service';
+import { IngredientsService } from './services/ingredients.service';
 import { LoggerService } from './services/logger.service';
 
 
@@ -42,10 +42,11 @@ import { LoggerService } from './services/logger.service';
   ],
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     FormsModule,
     AppRoutingModule
   ],
-  providers: [AuthGuard, Authservice, CanDeactivateGuard, CandidateResolver, CandidateService, CandidateMatchService, LoggerService],
+  providers: [AuthGuard, Authservice, CanDeactivateGuard, CandidateResolver, CandidateService, IngredientsService, LoggerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

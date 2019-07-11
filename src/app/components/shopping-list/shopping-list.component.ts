@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Ingredient } from '../../shared/ingredient.model'
-import { CandidateMatchService } from '../../services/candidateMatch.service';
+import { IngredientsService } from '../../services/ingredients.service';
 
 @Component({
   selector: 'app-shopping-list',
@@ -12,10 +12,10 @@ export class ShoppingListComponent implements OnInit {
 
   ingredients: Ingredient[] = [];
 
-  constructor(private candidateMatch: CandidateMatchService) { }
+  constructor(private ingredientsService: IngredientsService) { }
 
   ngOnInit() {
-    this.ingredients = this.candidateMatch.getIngredients();
+    this.ingredients = this.ingredientsService.getIngredients();
   }
 
   newIngredientAdded(ingredient: Ingredient) {
@@ -23,7 +23,7 @@ export class ShoppingListComponent implements OnInit {
   }
 
   itemSelected(index: number) {
-    this.candidateMatch.selectItem(index);
+    this.ingredientsService.startedEditing.next(index);
   }
 
 }

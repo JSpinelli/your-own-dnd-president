@@ -1,37 +1,68 @@
-import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Ingredient } from 'src/app/shared/ingredient.model';
-import { CandidateMatchService } from 'src/app/services/candidateMatch.service';
+import { IngredientsService } from 'src/app/services/ingredients.service';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-shopping-edit',
   templateUrl: './shopping-edit.component.html',
   styles: [],
 })
-export class ShoppingEditComponent implements OnInit {
+export class ShoppingEditComponent implements OnInit, OnDestroy {
 
-  @Output() newIngredientAdded = new EventEmitter<Ingredient>();
-  @ViewChild('name', { static: false }) ingredientName: ElementRef;
-  @ViewChild('amount', { static: false }) ingredientAmount: ElementRef;
-  @ViewChild('description', { static: false }) ingredientDesc: ElementRef;
+  @ViewChild('f', { static: false }) ingForm: NgForm;
+  subscription: Subscription;
+  editMode = false;
+  editIndex: number;
+  editIngredient: Ingredient;
+  listPopulated = false;
 
-  constructor(private candidateMatch: CandidateMatchService) { }
+  constructor(private ingredients: IngredientsService) { }
 
   ngOnInit() {
+    this.subscription = this.ingredients.startedEditing.subscribe(
+      (index: number) => {
+        this.editMode = true;
+        this.editIndex = index;
+        this.editIngredient = this.ingredients.getIngredient(index);
+        this.ingForm.setValue({
+          name: this.editIngredient.name,
+          desc: this.editIngredient.description,
+          amount: this.editIngredient.amount
+        });
+      }
+    );
+    this.listPopulated = this.ingredients.getTotal() > 0;
   }
 
-  onIngredientAdded() {
-    const ingredientToAdd = new Ingredient(
-      this.ingredientName.nativeElement.value,
-      this.ingredientDesc.nativeElement.value,
-      this.ingredientAmount.nativeElement.value);
-    this.candidateMatch.addIngredient(ingredientToAdd);
+  onIngredientAdded(form: NgForm) {
+    const ing = new Ingredient(form.value.name, form.value.desc, form.value.amount);
+    if (this.editMode) {
+      this.ingredients.replaceIngredient(this.editIndex, ing);
+      this.editMode = false;
+    } else {
+      this.ingredients.addIngredient(ing);
+    }
+    this.ingForm.reset();
+    this.listPopulated = this.ingredients.getTotal() > 0;
   }
 
-  deleteSelected() {
-    this.candidateMatch.deleteItem();
+  deleteItem() {
+    this.ingredients.deleteItem(this.editIndex);
+    this.listPopulated = this.ingredients.getTotal() > 0;
   }
 
-  clearItems() {
-    this.candidateMatch.clearList();
+  clearList() {
+    this.ingredients.clearList();
+  }
+
+  cancel() {
+    this.ingForm.reset();
+    this.editMode = false;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

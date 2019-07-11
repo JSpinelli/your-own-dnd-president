@@ -1,12 +1,13 @@
 import { Ingredient } from '../shared/ingredient.model';
 import { Recipe } from '../shared/recipe.model';
 import { LoggerService } from './logger.service';
+import { Subject } from 'rxjs';
 
-export class CandidateMatchService {
+export class IngredientsService {
 
     ingredients: Ingredient[] = [];
     recipes: Recipe[];
-    itemSelected: number;
+    startedEditing = new Subject<number>();
 
     constructor(private logger: LoggerService) { }
 
@@ -23,16 +24,27 @@ export class CandidateMatchService {
         return this.ingredients;
     }
 
-    public selectItem(index: number) {
-        this.itemSelected = index;
-        console.log(this.ingredients[this.itemSelected].name);
+    public getIngredient(index: number) {
+        return this.ingredients[index];
     }
 
-    public deleteItem() {
-        this.ingredients.splice(this.itemSelected, 1);
+    public replaceIngredient(index: number, ing: Ingredient) {
+        this.ingredients[index] = ing;
+    }
+
+    public deleteItem(index: number) {
+        this.ingredients.splice(index, 1);
     }
 
     public clearList() {
         this.ingredients.splice(0);
+    }
+
+    public getTotal() {
+        return this.ingredients.length;
+    }
+
+    public setList(list: Ingredient[]) {
+        this.ingredients = list;
     }
 }

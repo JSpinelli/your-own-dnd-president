@@ -1,25 +1,27 @@
 <div class="row">
     <div class="col-xs-12">
-        <form>
+        <form (submit)="onIngredientAdded(f)" #f="ngForm">
             <div class="row">
                 <div class="col-sm-5 form group">
                     <label for="name">Name</label>
-                    <input type="text" id="name" class="form-control" #name>
+                    <input type="text" id="name" class="form-control" name="name" ngModel required>
                 </div>
                 <div class="col-sm-2 form-group">
                     <label for="amount"> Amount</label>
-                    <input type="number" id="amount" class="form-control" #amount>
+                    <input type="number" id="amount" class="form-control" name ="amount" ngModel required [pattern]="'^[1-9]+[0-9]*$'">
                 </div>
                 <div class="col-sm-2 form-group">
                         <label for="description"> Description</label>
-                        <input type="text" id="desc" class="form-control" #description>
+                        <input type="text" id="desc" class="form-control" name="desc" ngModel>
                     </div>
                 <div class="col-xs-12">
                     <div class="btn-toolbar">
-                        <button class="btn btn-success" tpye="submit" (click)="onIngredientAdded()">Add</button>
-                        <button class="btn btn-danger" tpye="button" (click)="deleteSelected()">Delete</button>
-                        <button class="btn btn-primary" tpye="button" (click)="clearItems()">Clear</button>
+                        <button class="btn btn-success" tpye="submit" [disabled]="!f.valid" > {{editMode ? 'Update' : 'Add'}} </button>
+                        <button class="btn btn-danger"  tpye="button" (click)="deleteItem()" *ngIf="editMode"> Delete </button>
+                        <button class="btn btn-primary" tpye="button" (click)="cancel()"> Cancel </button>
+                        <button class="btn btn-primary pull-right" tpye="button" (click)="clearList()" *ngIf="listPopulated"> Clear List </button>
                     </div>
+                    
                 </div>
             </div>
         </form>

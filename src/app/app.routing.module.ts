@@ -10,7 +10,9 @@ import { CandidateResolver } from './services/candidate-resolver.service';
 
 const appRoutes: Routes = [
     { path: 'recipes', component: RecipesComponent },
-    { path: 'add-recipe', canActivate: [AuthGuard], canDeactivate: [CanDeactivateGuard], component: CandidateAddComponent },
+    //{ path: 'add-recipe', canActivate: [AuthGuard], canDeactivate: [CanDeactivateGuard], component: CandidateAddComponent },
+    { path: 'add-recipe', component: CandidateAddComponent },
+    { path: 'add-recipe/:id', component: CandidateAddComponent },
     { path: 'recipes/:id', component: RecipeDetailComponent, resolve: {candidate: CandidateResolver} },
     { path: '', component: RecipesComponent },
     { path: 'shopping-list', component: ShoppingListComponent },
