@@ -22,6 +22,8 @@ import { CandidateResolver } from './services/candidate-resolver.service';
 import { CandidateService } from './services/candidates.service';
 import { IngredientsService } from './services/ingredients.service';
 import { LoggerService } from './services/logger.service';
+import { ShortenPipe } from './pipes/shorten.pipe';
+import {HttpClientModule} from '@angular/common/http';
 
 
 
@@ -38,13 +40,15 @@ import { LoggerService } from './services/logger.service';
     BasicHighlightDirective,
     BestHighlightDirective,
     DropddownDirective,
-    CandidateAddComponent
+    CandidateAddComponent,
+    ShortenPipe
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [AuthGuard, Authservice, CanDeactivateGuard, CandidateResolver, CandidateService, IngredientsService, LoggerService],
   bootstrap: [AppComponent]

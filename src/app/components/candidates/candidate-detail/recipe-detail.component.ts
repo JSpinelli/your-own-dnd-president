@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 export class RecipeDetailComponent implements OnInit, OnDestroy {
 
   @Input() recipeToDisplay: Recipe;
-  id: number;
+  @Input() id: number;
   subscription: Subscription;
 
   constructor(
@@ -32,17 +32,9 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         }
       );
     this.id = this.route.snapshot.params.id;
-    // this.recipeToDisplay = this.candServ.candidates[this.id];
-
-    // this.subscription = this.route.params.subscribe(
-    //   (params: Params) => {
-    //     this.recipeToDisplay = this.candServ.candidates[params.id];
-    //   }
-    // );
   }
 
   ngOnDestroy() {
-    //this.subscription.unsubscribe();
   }
 
   AddIngredients() {
@@ -52,5 +44,9 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
   }
   nextCandidate() {
     this.router.navigate(['/recipes', ++this.id]);
+  }
+
+  deleteCandidate() {
+    this.candServ.deleteCandidate(this.id);
   }
 }

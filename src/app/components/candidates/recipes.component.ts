@@ -10,6 +10,8 @@ import { CandidateService } from '../../services/candidates.service';
 export class RecipesComponent implements OnInit {
 
   recipe: Recipe = null;
+  errorMsg = null;
+  loading = true;
 
   constructor(private candidateService: CandidateService) { }
 
@@ -19,6 +21,7 @@ export class RecipesComponent implements OnInit {
         this.recipe = recipe;
       }
     );
+    this.errorMsg = this.candidateService.error();
   }
 
 }

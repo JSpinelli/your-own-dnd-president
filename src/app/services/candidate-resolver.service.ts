@@ -13,7 +13,7 @@ export class CandidateResolver implements Resolve<Recipe>{
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Recipe> | Promise<Recipe> | Recipe {
 
-        return this.candidateService.candidates[route.params.id];
+        return this.candidateService.getCandidate(route.params.id);
     }
 
 }

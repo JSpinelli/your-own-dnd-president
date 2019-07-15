@@ -5,6 +5,8 @@ import { CanComponentDeactivate } from '../../services/can-deactivate-guard.serv
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
+import { Recipe } from 'src/app/shared/recipe.model';
+import { Ingredient } from 'src/app/shared/ingredient.model';
 
 @Component({
   selector: 'app-candidate-add',
@@ -15,19 +17,21 @@ import { CandidateService } from 'src/app/services/candidates.service';
 export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
 
   id: number;
+  showDescField: boolean[] = [];
   candidateForm: FormGroup;
   ingredientsForm: FormArray;
-  changesSaved = true;
+  changesSaved = false;
   defaultName = 'This is a default Name, CHANGE IT!';
   imgSet = false;
   editMode = false;
-  imgPath = 'https://cdn.shopify.com/s/files/1/0122/1738/5019/files/CriticalRole_Logo_Black512x512_512x.png?v=1539919482';
+  defaultImage = 'https://cdn.shopify.com/s/files/1/0122/1738/5019/files/CriticalRole_Logo_Black512x512_512x.png?v=1539919482';
+  imgPath = '';
 
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private candidates: CandidateService
+    private candidates: CandidateService,
   ) { }
 
   ngOnInit() {
@@ -38,30 +42,27 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
         this.editMode = params.id != null;
       }
     );
- 
-    if (this.editMode) {
-      this.loadInfo();
-    }
-    
+    this.loadInfo();
   }
 
   loadInfo() {
-    const ingredientList= new FormArray([]);
-    let candName="";
-    let candDesc="";
-    let candImg='https://cdn.shopify.com/s/files/1/0122/1738/5019/files/CriticalRole_Logo_Black512x512_512x.png?v=1539919482';
+    const ingredientList = new FormArray([]);
+    let candName = "";
+    let candDesc = "";
+    let candImg = "";
     if (this.editMode) {
       const candidate = this.candidates.getCandidate(this.id);
       for (let ingredient of candidate.ingredients) {
         ingredientList.push(new FormGroup({
           name: new FormControl(ingredient.name, Validators.required),
-          amount: new FormControl(ingredient.amount, Validators.required),
+          amount: new FormControl(ingredient.amount, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
           desc: new FormControl(ingredient.description)
         }));
+        this.showDescField.push(false);
       }
-      candName=candidate.name;
-      candDesc=candidate.description;
-      candImg=candidate.imagePath;
+      candName = candidate.name;
+      candDesc = candidate.description;
+      candImg = candidate.imagePath;
       this.imgPath = candidate.imagePath;
     }
     this.candidateForm = new FormGroup({
@@ -74,17 +75,49 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     });
   }
 
+  addIngredient() {
+    (this.candidateForm.get('ingredients') as FormArray).push(new FormGroup({
+      name: new FormControl(null, Validators.required),
+      amount: new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
+      desc: new FormControl(null)
+    }));
+    this.showDescField.push(false);
+  }
+  deleteIngredient(index: number) {
+    (this.candidateForm.get('ingredients') as FormArray).removeAt(index);
+    this.showDescField.splice(index, 1);
+  }
+
   onSubmit() {
-    console.log('SUBMIT');
-    console.log(this.candidateForm);
-    // this.formReference.form.reset() // Reset the state of the form
+    const values = this.candidateForm.value;
+    const ingredients: Ingredient[] = [];
+    for (const ingToAdd of this.getControls()) {
+      ingredients.push(new Ingredient(ingToAdd.value.name, ingToAdd.value.desc, ingToAdd.value.amount));
+    }
+    const candidateToAdd = new Recipe(
+      values.candidateInfo.name,
+      values.candidateInfo.desc,
+      values.candidateInfo.img,
+      ingredients);
+    if (this.editMode) {
+      this.candidates.updateCandidate(candidateToAdd, this.id);
+    } else {
+      this.candidates.registerNewCandidate(candidateToAdd);
+    }
+    this.candidateForm.reset();
+    this.changesSaved = true;
+    this.router.navigate(['/']);
   }
 
   canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.changesSaved) {
-      return true;
+    if (this.candidateForm.touched) {
+      if (this.changesSaved) {
+        return true;
+      } else {
+        return confirm('Do you want to discard changes?');
+      }
     } else {
-      return confirm('Do you want to discard changes?');
+      return true;
     }
   }
 
