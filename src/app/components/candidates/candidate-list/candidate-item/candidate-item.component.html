@@ -1,0 +1,11 @@
+<a class="list-group-item clearfix" [routerLink]="['/candidate',id]">
+    <div class="pull-left">
+        <h4 class="list-group-item-heading">
+            {{candidate.name}}
+        </h4>
+        <p class="list-group-item-text"> {{candidate.description}} </p>
+    </div>
+    <span class="pull-right">
+        <img [src]="candidate.imagePath" alt="{{candidate.name}}" class="img-responsive" style="max-height: 50px;">
+    </span>
+</a>

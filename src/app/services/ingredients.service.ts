@@ -1,12 +1,12 @@
 import { Ingredient } from '../shared/ingredient.model';
-import { Recipe } from '../shared/recipe.model';
+import { Candidate } from '../shared/candidate.model';
 import { LoggerService } from './logger.service';
 import { Subject } from 'rxjs';
 
 export class IngredientsService {
 
     ingredients: Ingredient[] = [];
-    recipes: Recipe[];
+    recipes: Candidate[];
     startedEditing = new Subject<number>();
 
     constructor(private logger: LoggerService) { }

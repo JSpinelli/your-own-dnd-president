@@ -1,12 +1,12 @@
 <div class="row">
     <div class="col-md-4">
-        <img src="{{recipeToDisplay.imagePath}}" alt="{{recipeToDisplay.name}}" class="img-responsive img-thumbnail"
+        <img src="{{candidateToDisplay.imagePath}}" alt="{{candidateToDisplay.name}}" class="img-responsive img-thumbnail"
             style="max-height: 300px;">
     </div>
     <div class="col-md-8 ">
         <div class="row">
             <div class="col-xs-7">
-                <h1>{{recipeToDisplay.name }}</h1>
+                <h1>{{candidateToDisplay.name }}</h1>
             </div>
             <div class="col-xs-5">
                 <div class="btn-group" appDropdown>
@@ -16,8 +16,8 @@
                     </button>
                     <ul class="dropdown-menu">
                     <li><a (click)="AddIngredients()"> Add ingredients</a></li>
-                    <li><a [routerLink]="['/add-recipe',id]"> Edit Candidate</a></li>
-                    <li><a (click)="deleteCandidate()" [routerLink]="['/']"> Delete Candidate</a></li>
+                    <li><a [routerLink]="['/edit-candidate',id]"> Edit Candidate</a></li>
+                    <li><a (click)="deleteCandidate()" [routerLink]="['/candidates']"> Delete Candidate</a></li>
                 </ul>
                 </div>
             </div>
@@ -26,13 +26,13 @@
             <div class="col-xs-12">
                 <div class="row">
                     <div class="col-xs-12">
-                        {{recipeToDisplay.description}}
+                        {{candidateToDisplay.description}}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
                         <ul class="list-group">
-                            <li class="list-group-item" *ngFor="let ingredient of recipeToDisplay.ingredients">
+                            <li class="list-group-item" *ngFor="let ingredient of candidateToDisplay.ingredients">
                                 {{ingredient.name}} - ({{ingredient.amount}})
                             </li>
                         </ul>

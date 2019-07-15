@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Recipe } from '../../shared/recipe.model';
+import { Candidate } from '../../shared/candidate.model';
 import { CandidateService } from '../../services/candidates.service';
 
 @Component({
-  selector: 'app-recipes',
-  templateUrl: './recipes.component.html',
-  styleUrls: ['./recipes.component.css'],
+  selector: 'app-candidate',
+  templateUrl: './candidate.component.html',
+  styleUrls: ['./candidate.component.css'],
 })
-export class RecipesComponent implements OnInit {
+export class CandidatesComponent implements OnInit {
 
-  recipe: Recipe = null;
+  recipe: Candidate = null;
   errorMsg = null;
   loading = true;
 
@@ -17,7 +17,7 @@ export class RecipesComponent implements OnInit {
 
   ngOnInit() {
     this.candidateService.recipeSelected.subscribe(
-      (recipe: Recipe) => {
+      (recipe: Candidate) => {
         this.recipe = recipe;
       }
     );

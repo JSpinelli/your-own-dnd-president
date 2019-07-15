@@ -1,18 +1,18 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Recipe } from 'src/app/shared/recipe.model';
+import { Candidate } from 'src/app/shared/candidate.model';
 import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
 import { ActivatedRoute, Params, Router, Data } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-recipe-detail',
-  templateUrl: './recipe-detail.component.html',
-  styleUrls: ['./recipe-detail.component.css']
+  selector: 'app-candidate-detail',
+  templateUrl: './candidate-detail.component.html',
+  styleUrls: ['./candidate-detail.component.css']
 })
-export class RecipeDetailComponent implements OnInit, OnDestroy {
+export class CandidateDetailComponent implements OnInit, OnDestroy {
 
-  @Input() recipeToDisplay: Recipe;
+  @Input() candidateToDisplay: Candidate;
   @Input() id: number;
   subscription: Subscription;
 
@@ -21,14 +21,13 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     private candMatchServ: IngredientsService,
     private route: ActivatedRoute,
     private router: Router) {
-
   }
 
   ngOnInit() {
     this.route.data
       .subscribe(
         (data: Data) => {
-          this.recipeToDisplay = data.candidate;
+          this.candidateToDisplay = data.candidate;
         }
       );
     this.id = this.route.snapshot.params.id;
@@ -38,12 +37,13 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
   }
 
   AddIngredients() {
-    this.recipeToDisplay.ingredients.forEach(element => {
+    this.candidateToDisplay.ingredients.forEach(element => {
       this.candMatchServ.addIngredient(element);
     });
   }
+  
   nextCandidate() {
-    this.router.navigate(['/recipes', ++this.id]);
+    this.router.navigate(['/candidate', ++this.id]);
   }
 
   deleteCandidate() {

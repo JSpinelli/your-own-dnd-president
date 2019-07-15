@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col-xs-12">
+        <button class="btn btn-success" routerLink="/add-candidate"> New Candidate</button>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-xs-12">
+        <app-candidate-item *ngFor= "let candidate of candidates;let i = index" [candidate]="candidate" [id]="i"></app-candidate-item>
+    </div>
+</div>

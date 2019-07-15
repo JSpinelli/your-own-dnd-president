@@ -1,45 +1,35 @@
 import { Injectable, EventEmitter, OnInit } from '@angular/core';
-import { Recipe } from '../shared/recipe.model';
-import { Ingredient } from '../shared/ingredient.model';
+import { Candidate } from '../shared/candidate.model';
 import { LoggerService } from './logger.service';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { HttpClient} from '@angular/common/http';
+import { map} from 'rxjs/operators';
+import { Authservice } from '../components/auth/auth.service';
 
 @Injectable()
 export class CandidateService {
 
-    recipeSelected = new EventEmitter<Recipe>();
-    // private candidates: { candidate: Recipe, id: string }[] = [];
-    private candidates: Recipe[] = [];
+    recipeSelected = new EventEmitter<Candidate>();
+    private candidates: Candidate[] = [];
     private url = 'https://your-own-dnd-president.firebaseio.com/candidates';
     private errorMsg = null;
 
-    constructor(private logger: LoggerService, private http: HttpClient) {
+    constructor(private logger: LoggerService, private http: HttpClient, private auth: Authservice) {}
 
-        http.get(this.url+'.json')
-            .pipe(map(responseData => {
-                const candidatesArray = [];
-                for (const key in responseData) {
-                    if (responseData.hasOwnProperty(key)) {
-                        candidatesArray.push({ ...responseData[key], id: key });
+    fetchCandidates() {
+        return this.http.get(this.url + '.json').pipe(
+                map(responseData => {
+                    const candidatesArray = [];
+                    for (const key in responseData) {
+                        if (responseData.hasOwnProperty(key)) {
+                            candidatesArray.push({ ...responseData[key], id: key });
+                        }
                     }
-                }
-                return candidatesArray;
-            })
-            ).subscribe(
-                responseData => {
-                    console.log(responseData);
-                    this.candidates.push(...responseData);
-                },
-                error => {
-                    console.log("ERROR"+error);
-                    this.errorMsg = 'There has been an error retrieving the candidates list, Sorry';
-                }
-            );
+                    this.candidates = candidatesArray;
+                    return candidatesArray;
+                }));
     }
 
-    registerNewCandidate(candidate: Recipe) {
-        this.logger.log(candidate.name);
+    registerNewCandidate(candidate: Candidate) {
         this.candidates.push(candidate);
         this.http.post(this.url + '.json', candidate)
             .subscribe(
@@ -49,15 +39,13 @@ export class CandidateService {
             );
     }
 
-    getCandidates() {
-        return this.candidates;
-    }
-
-    updateCandidate(candidate: Recipe, index: number) {
+    updateCandidate(candidate: Candidate, index: number) {
         this.candidates[index] = candidate;
     }
 
     getCandidate(index: number) {
+        console.log('This is the number: '+index);
+        console.log(this.candidates[index].name);
         return this.candidates[index];
     }
 
@@ -68,7 +56,7 @@ export class CandidateService {
         this.candidates.splice(index, 1);
     }
 
-    error(){
+    error() {
         return this.errorMsg;
     }
 }

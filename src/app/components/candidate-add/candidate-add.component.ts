@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CanComponentDeactivate } from '../../services/can-deactivate-guard.service';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
-import { Recipe } from 'src/app/shared/recipe.model';
+import { Candidate } from 'src/app/shared/candidate.model';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 
 @Component({
@@ -94,7 +94,7 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     for (const ingToAdd of this.getControls()) {
       ingredients.push(new Ingredient(ingToAdd.value.name, ingToAdd.value.desc, ingToAdd.value.amount));
     }
-    const candidateToAdd = new Recipe(
+    const candidateToAdd = new Candidate(
       values.candidateInfo.name,
       values.candidateInfo.desc,
       values.candidateInfo.img,

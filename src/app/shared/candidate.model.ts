@@ -1,7 +1,6 @@
 import { Ingredient } from './ingredient.model';
-import { Identifiers } from '@angular/compiler/src/render3/r3_identifiers';
 
-export class Recipe {
+export class Candidate {
     public name: string;
     public id:string;
     public description: string;
