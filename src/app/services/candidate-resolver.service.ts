@@ -4,7 +4,7 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/r
 import { CandidateService } from './candidates.service';
 import { Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class CandidateResolver implements Resolve<Candidate>{
 
     id: number;
@@ -12,7 +12,6 @@ export class CandidateResolver implements Resolve<Candidate>{
     constructor(private candidateService: CandidateService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Candidate> | Promise<Candidate> | Candidate {
-        
         return this.candidateService.getCandidate(route.params.id);
     }
 

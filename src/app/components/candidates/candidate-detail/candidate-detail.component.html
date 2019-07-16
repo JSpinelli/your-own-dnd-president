@@ -1,45 +1,56 @@
 <div class="row">
     <div class="col-md-4">
-        <img src="{{candidateToDisplay.imagePath}}" alt="{{candidateToDisplay.name}}" class="img-responsive img-thumbnail"
-            style="max-height: 300px;">
+        <div class="row">
+            <img src="{{candidateToDisplay.imagePath}}" alt="{{candidateToDisplay.name}}"
+                class="img-responsive img-thumbnail center-block" style="max-height: 300px;">
+        </div>
+        <div class="row">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" (click)="AddIngredients()">
+                        Add ingredients
+                    </button>
+                    <button type="button" class="btn btn-info" [routerLink]="['../edit',id]">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="deleteCandidate()"
+                        [routerLink]="['/candidates']">
+                        Delete
+                    </button>
+                </div>
+        </div>
     </div>
     <div class="col-md-8 ">
         <div class="row">
-            <div class="col-xs-7">
-                <h1>{{candidateToDisplay.name }}</h1>
-            </div>
-            <div class="col-xs-5">
-                <div class="btn-group" appDropdown>
-                    <button type="button" class="btn  btn-primary pull-right" >
-                        Manage Recipe
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                    <li><a (click)="AddIngredients()"> Add ingredients</a></li>
-                    <li><a [routerLink]="['/edit-candidate',id]"> Edit Candidate</a></li>
-                    <li><a (click)="deleteCandidate()" [routerLink]="['/candidates']"> Delete Candidate</a></li>
-                </ul>
-                </div>
-            </div>
+            <h1>{{candidateToDisplay.name }}</h1>
         </div>
         <div class="row">
-            <div class="col-xs-12">
-                <div class="row">
-                    <div class="col-xs-12">
-                        {{candidateToDisplay.description}}
-                    </div>
+            <div class="row">
+                <div class=" well col-md-12">
+                    {{candidateToDisplay.description}}
                 </div>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <ul class="list-group">
-                            <li class="list-group-item" *ngFor="let ingredient of candidateToDisplay.ingredients">
-                                {{ingredient.name}} - ({{ingredient.amount}})
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+            </div>
+            <div class="row">
+                <h3>Ingredients</h3>
+                <hr>
+                <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let ingredient of candidateToDisplay.ingredients">
+                        {{ingredient.name}} - ({{ingredient.amount}})
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    <button class="btn btn-success" (click)="nextCandidate()">Next Candidate</button>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <ul class="pager">
+            <li class="previous">
+                <button type="button" class="btn btn-link" (click)="previousCandidate()"
+                    [disabled]="!hasPrevious">Previous</button>
+            </li>
+            <li class="next">
+                <button type="button" class="btn btn-link" (click)="nextCandidate()" [disabled]="!hasNext">Next</button>
+            </li>
+        </ul>
+    </div>
 </div>

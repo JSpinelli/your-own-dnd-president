@@ -10,11 +10,13 @@ import { Subscription } from 'rxjs';
   templateUrl: './candidate-detail.component.html',
   styleUrls: ['./candidate-detail.component.css']
 })
-export class CandidateDetailComponent implements OnInit, OnDestroy {
+export class CandidateDetailComponent implements OnInit {
 
   @Input() candidateToDisplay: Candidate;
   @Input() id: number;
   subscription: Subscription;
+  hasNext = true;
+  hasPrevious = true;
 
   constructor(
     private candServ: CandidateService,
@@ -30,10 +32,14 @@ export class CandidateDetailComponent implements OnInit, OnDestroy {
           this.candidateToDisplay = data.candidate;
         }
       );
-    this.id = this.route.snapshot.params.id;
-  }
-
-  ngOnDestroy() {
+    this.route.params
+      .subscribe(
+        (params) => {
+          this.id = params.id;
+          this.hasPrevious = !(this.id == 0);
+          this.hasNext = !(this.id == (this.candServ.getTotal() - 1));
+        }
+      );
   }
 
   AddIngredients() {
@@ -41,9 +47,12 @@ export class CandidateDetailComponent implements OnInit, OnDestroy {
       this.candMatchServ.addIngredient(element);
     });
   }
-  
+
   nextCandidate() {
-    this.router.navigate(['/candidate', ++this.id]);
+    this.router.navigate(['/candidates', ++this.id]);
+  }
+  previousCandidate() {
+    this.router.navigate(['/candidates', --this.id]);
   }
 
   deleteCandidate() {

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Authservice } from './auth.service';
 import { map, take } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class AuthGuard implements CanActivate, CanActivateChild {
 
     constructor(private authService: Authservice, private router: Router) { }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -9,12 +9,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 export class ErrorDisplayComponent {
 
-    constructor (private router: Router , private route: ActivatedRoute){}
+    @Output() closeEvent= new EventEmitter<void>();
 
     @Input() errorMessage:string;
 
-    onBack(){
-        this.router.navigate(this.route.snapshot.url);
+    onClose(){
+        this.closeEvent.emit();
     }
 
 }

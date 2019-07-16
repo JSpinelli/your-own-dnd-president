@@ -1,15 +1,15 @@
 import { Ingredient } from '../shared/ingredient.model';
-import { Candidate } from '../shared/candidate.model';
-import { LoggerService } from './logger.service';
 import { Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
 
+@Injectable({providedIn: 'root'})
 export class IngredientsService {
 
     ingredients: Ingredient[] = [];
-    recipes: Candidate[];
     startedEditing = new Subject<number>();
+    ingredientsChanged = new Subject<Ingredient[]>();
 
-    constructor(private logger: LoggerService) { }
+    constructor() { }
 
     public addIngredient(ing: Ingredient) {
         if (this.ingredients) {
@@ -17,11 +17,11 @@ export class IngredientsService {
         } else {
             this.ingredients = [ing];
         }
-        this.logger.log('Added: ' + ing.name);
+        this.ingredientsChanged.next(this.ingredients.slice());
     }
 
     public getIngredients() {
-        return this.ingredients;
+        return this.ingredients.slice();
     }
 
     public getIngredient(index: number) {
@@ -34,10 +34,12 @@ export class IngredientsService {
 
     public deleteItem(index: number) {
         this.ingredients.splice(index, 1);
+        this.ingredientsChanged.next(this.ingredients.slice());
     }
 
     public clearList() {
         this.ingredients.splice(0);
+        this.ingredientsChanged.next(this.ingredients.slice());
     }
 
     public getTotal() {

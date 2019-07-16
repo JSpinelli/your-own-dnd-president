@@ -5,7 +5,7 @@ import { HttpClient} from '@angular/common/http';
 import { map} from 'rxjs/operators';
 import { Authservice } from '../components/auth/auth.service';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class CandidateService {
 
     recipeSelected = new EventEmitter<Candidate>();
@@ -44,8 +44,6 @@ export class CandidateService {
     }
 
     getCandidate(index: number) {
-        console.log('This is the number: '+index);
-        console.log(this.candidates[index].name);
         return this.candidates[index];
     }
 
@@ -54,6 +52,10 @@ export class CandidateService {
             responseData => { console.log('This is the response ' + responseData); }
         );
         this.candidates.splice(index, 1);
+    }
+
+    getTotal(): number {
+        return this.candidates.length;
     }
 
     error() {

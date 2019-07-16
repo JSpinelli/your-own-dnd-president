@@ -14,6 +14,7 @@ export class CandidatesListComponent implements OnInit {
   candidates: Candidate[];
   errorMsg = null;
   isLoading = false;
+  
   constructor(private candidateService: CandidateService, private route: ActivatedRoute) { }
 
   ngOnInit() {

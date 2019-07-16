@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
-import { CanComponentDeactivate } from '../../services/can-deactivate-guard.service';
+import { CanComponentDeactivate } from '../../../services/can-deactivate-guard.service';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
@@ -77,9 +77,9 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
 
   addIngredient() {
     (this.candidateForm.get('ingredients') as FormArray).push(new FormGroup({
-      name: new FormControl(null, Validators.required),
-      amount: new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
-      desc: new FormControl(null)
+      name: new FormControl('Name', Validators.required),
+      amount: new FormControl('Amount', [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
+      desc: new FormControl('Description')
     }));
     this.showDescField.push(false);
   }
@@ -106,7 +106,7 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     }
     this.candidateForm.reset();
     this.changesSaved = true;
-    this.router.navigate(['/']);
+    this.router.navigate(['/candidates']);
   }
 
   canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {

@@ -15,8 +15,9 @@ export class AuthComponent implements OnInit {
     logInMode = true;
     isLoading = false;
     errorMessage = null;
+    testing = true;
 
-    authObs : Observable<AuthResponseData>;
+    authObs: Observable<AuthResponseData>;
 
     constructor(private auth: Authservice, private router: Router) {
 
@@ -31,11 +32,20 @@ export class AuthComponent implements OnInit {
     }
 
     onSubmit(form: NgForm) {
-        if (!form.valid) {
-            return;
+        console.log('SUBMIT');
+        let email;
+        let password ;
+        if (this.testing) {
+            email = 'asd@asd.com';
+            password = 'asdasd';
+        } else {
+            if (!form.valid) {
+                return;
+            }
+            email = form.value.email;
+            password = form.value.password;
         }
-        const email = form.value.email;
-        const password = form.value.password;
+
         this.isLoading = true;
         if (this.logInMode) {
             this.authObs = this.auth.signIn(email, password);
