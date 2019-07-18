@@ -10,8 +10,11 @@ import { AppRoutingModule } from './app.routing.module';
 import { ShortenPipe } from './pipes/shorten.pipe';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthIntercetorService } from './components/auth/auth-interceptor.service';
-import { ShoppingListModule } from './components/shopping-list/shopping-list.module';
-import {AuthModule} from './components/auth/auth.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 
 
@@ -28,8 +31,10 @@ import {AuthModule} from './components/auth/auth.module';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ShoppingListModule,
-    AuthModule
+    BrowserAnimationsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthIntercetorService, multi: true} ],

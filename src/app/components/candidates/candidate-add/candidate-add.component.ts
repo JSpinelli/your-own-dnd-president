@@ -7,6 +7,7 @@ import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
 import { Candidate } from 'src/app/shared/candidate.model';
 import { Ingredient } from 'src/app/shared/ingredient.model';
+import { Authservice } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-candidate-add',
@@ -32,6 +33,7 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     private router: Router,
     private route: ActivatedRoute,
     private candidates: CandidateService,
+    private auth:Authservice,
   ) { }
 
   ngOnInit() {
@@ -98,7 +100,9 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
       values.candidateInfo.name,
       values.candidateInfo.desc,
       values.candidateInfo.img,
-      ingredients);
+      ingredients,
+      this.auth.user.getValue().token
+      );
     if (this.editMode) {
       this.candidates.updateCandidate(candidateToAdd, this.id);
     } else {

@@ -14,6 +14,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         Promise<boolean | UrlTree> |
         boolean |
         UrlTree {
+        this.authService.autoLogin();
         return this.authService.user.pipe(take(1), map(user => {
             const isAuth = !!user;
             if (isAuth) {

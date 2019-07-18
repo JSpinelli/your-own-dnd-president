@@ -4,6 +4,9 @@ import { catchError, tap } from 'rxjs/operators';
 import { throwError, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
+import {environment} from '../../../environments/environment';
+import { AngularFireAuth } from '@angular/fire/auth';
+//import { auth } from 'firebase/app';
 
 export interface AuthResponseData {
     kind: string;
@@ -21,10 +24,10 @@ export class Authservice {
     user = new BehaviorSubject<User>(null);
     tokenExpirationTimer;
 
-    signUp_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyAAgfzOv7HnORSUoGTYxlBCPq0ecUzlBXM';
-    signIn_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyAAgfzOv7HnORSUoGTYxlBCPq0ecUzlBXM'
+    signUp_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key='+environment.firebaseAPIKey;
+    signIn_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key='+environment.firebaseAPIKey
 
-    constructor(private http: HttpClient, private router: Router) { }
+    constructor(private http: HttpClient, private router: Router, private firebaseAuth: AngularFireAuth) { }
 
     signIn(userEmail: string, userPass: string) {
         return this.http.post<AuthResponseData>(
@@ -39,6 +42,18 @@ export class Authservice {
             tap(resData => this.authUser(resData.email, resData.localId, resData.idToken, +resData.expiresIn))
         );
     }
+
+    // signIn(userEmail: string, userPass: string) {
+    //     return this.firebaseAuth.auth.signInWithEmailAndPassword(userEmail,userPass).then(
+    //         value => {
+    //             console.log('It worked');
+    //         })
+    //     .catch(
+    //         err => {
+    //             console.log(err);
+    //         }
+    //     );
+    // }
 
     signUp(userEmail: string, userPass: string) {
         return this.http.post<AuthResponseData>(
@@ -69,8 +84,8 @@ export class Authservice {
             _token: string,
             _tokenExpirationDate: string
         } = JSON.parse(localStorage.getItem('userData'));
-        if (!this.user) {
-            return;
+        if (!userData) {
+            return false;
         } else {
             const loadedUser = new User(
                 userData.email,
@@ -83,7 +98,9 @@ export class Authservice {
                 const newExpiration = previousExp - currentDate;
                 this.autoLogout(newExpiration);
                 this.user.next(loadedUser);
+                return true;
             }
+            return false;
         }
     }
 

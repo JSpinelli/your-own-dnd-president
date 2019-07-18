@@ -1,11 +1,20 @@
-<a class="list-group-item clearfix" [routerLink]="[id]">
-    <div class="pull-left">
-        <h4 class="list-group-item-heading">
-            {{candidate.name}}
-        </h4>
-        <p class="list-group-item-text"> {{candidate.description}} </p>
+<div class="col-md-6">
+    <div class="row">
+        <a class="list-group-item clearfix" [routerLink]="['/candidates',id]" [@addCandidateAnim]>
+            <div class="col-md-3">
+                <img [src]="candidate.imagePath" alt="{{candidate.name}}" class="img-responsive"
+                    style="max-height: 150px;">
+            </div>
+            <div class="col-md-6">
+                <h3 class="list-group-item-heading">
+                    {{candidate.name}}
+                </h3>
+                <p class="list-group-item-text"> {{candidate.description}} </p>
+            </div>
+            <div *ngIf="isVote" class="col-md-3">
+                <button type="button" class="btn btn-default">+</button>
+                <button type="button" class="btn btn-default">-</button>
+            </div>
+        </a>
     </div>
-    <span class="pull-right">
-        <img [src]="candidate.imagePath" alt="{{candidate.name}}" class="img-responsive" style="max-height: 50px;">
-    </span>
-</a>
+</div>

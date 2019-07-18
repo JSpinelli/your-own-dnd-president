@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Authservice, AuthResponseData } from './auth.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
     selector: 'app-auth',
@@ -15,26 +16,48 @@ export class AuthComponent implements OnInit {
     logInMode = true;
     isLoading = false;
     errorMessage = null;
-    testing = true;
+    testing = false;
 
     authObs: Observable<AuthResponseData>;
 
-    constructor(private auth: Authservice, private router: Router) {
+    constructor(private auth: Authservice, private router: Router, private afAuth: AngularFireAuth) {
 
     }
 
     ngOnInit() {
-
+        if (this.auth.autoLogin()) {
+            this.router.navigate(['/candidates']);
+        }
     }
 
     switchMode() {
         this.logInMode = !this.logInMode;
     }
 
+    // onSubmit(form: NgForm) {
+    //     let email;
+    //     let password;
+    //     if (this.testing) {
+    //         email = 'asd@asd.com';
+    //         password = 'asdasd';
+    //     } else {
+    //         if (!form.valid) {
+    //             return;
+    //         }
+    //         email = form.value.email;
+    //         password = form.value.password;
+    //     }
+    //     if (this.logInMode) {
+    //         this.auth.signIn(email, password);
+    //     } else {
+    //         this.authObs = this.auth.signUp(email, password);
+    //     }
+    //     form.reset();
+    // }
+
     onSubmit(form: NgForm) {
-        console.log('SUBMIT');
         let email;
-        let password ;
+        let password;
         if (this.testing) {
             email = 'asd@asd.com';
             password = 'asdasd';
@@ -53,13 +76,11 @@ export class AuthComponent implements OnInit {
             this.authObs = this.auth.signUp(email, password);
         }
         this.authObs.subscribe(
-            responseData => {
-                console.log(responseData);
+            () => {
                 this.isLoading = false;
                 this.router.navigate(['/candidates']);
             },
             errorRes => {
-                console.log(errorRes);
                 this.errorMessage = errorRes;
                 this.isLoading = false;
             });

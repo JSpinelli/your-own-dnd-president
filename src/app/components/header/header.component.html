@@ -7,7 +7,10 @@
         <div class=" collapse navbar-collapse">
             <ul class="nav navbar-nav" style="cursor: pointer;">
                 <li>
-                    <a routerLink="/candidates" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" *ngIf="isAuth">Recipes</a>
+                    <a routerLink="/candidates" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" *ngIf="isAuth">Candidates</a>
+                </li>
+                <li>
+                    <a routerLink="candidates/my-candidates" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" *ngIf="isAuth">Your candidates</a>
                 </li>
                 <li>
                     <a [routerLink]="['/shopping-list']" routerLinkActive="active">Shopping list</a>

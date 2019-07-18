@@ -1,0 +1,127 @@
+{
+  "users": {
+    "asd@asd.com": {
+      "name": "ASD",
+      "userCandidates": {
+        "-LjapD1XdxTo8dGW87ag": {
+          "approved": true
+        },
+        "-LjapEFXOkYqA271S42h": {
+          "approved": true
+        },
+        "-LjbZLKm-Oc8WV2vGluW": {
+          "approved": true
+        },
+        "-LjrI8WaoUc2FbdaVSE9": {
+          "approved": true
+        }
+      }
+    }
+  },
+  "candidates": {
+    "approved":{
+    "-LjapD1XdxTo8dGW87ag": {
+      "description": "The best",
+      "imagePath": "https://vignette.wikia.nocookie.net/disney/images/9/9c/Sam_Riegel.jpg/revision/latest?cb=20180831203535",
+      "ingredients": [
+        {
+          "amount": 5,
+          "description": "Juicy",
+          "name": "Tomatoes"
+        },
+        {
+          "amount": 1000,
+          "description": "Juicy",
+          "name": "Fun"
+        },
+        {
+          "amount": 99,
+          "description": "Juicy",
+          "name": "Rule of Cool"
+        }
+      ],
+      "name": "Sam",
+      "owner": "asd@asd.com",
+      "upVotes": "5",
+      "downVotes": "2"
+    },
+    "-LjapEFXOkYqA271S42h": {
+      "description": "The best",
+      "imagePath": "https://vignette.wikia.nocookie.net/disney/images/9/95/Liam_O%27Brien.jpg/revision/latest?cb=20180812015101",
+      "ingredients": [
+        {
+          "amount": 2,
+          "description": "Not fun",
+          "name": "RAW"
+        },
+        {
+          "amount": 54,
+          "description": "Vax cof cof",
+          "name": "Sad Deaths"
+        },
+        {
+          "amount": 9,
+          "description": "Fire guy",
+          "name": "Sad Bois"
+        }
+      ],
+      "name": "Liam",
+      "owner": "asd@asd.com",
+      "upVotes": "5",
+      "downVotes": "2"
+    },
+    "-LjbZLKm-Oc8WV2vGluW": {
+      "description": "asd",
+      "imagePath": "https://cdn.shopify.com/s/files/1/0122/1738/5019/files/CriticalRole_Logo_Black512x512_512x.png?v=1539919482",
+      "ingredients": [
+        {
+          "amount": 3,
+          "name": "asd"
+        }
+      ],
+      "name": "asd",
+      "owner": "asd@asd.com",
+      "upVotes": "5",
+      "downVotes": "2"
+    },
+    "-LjrI8WaoUc2FbdaVSE9": {
+      "description": "This is a description, with a shitty keyboard",
+      "imagePath": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3K7G8WSxGxaRAZ5SOVhO2bmEQg9d2AgvA_1TsddKUeTI9FExX",
+      "ingredients": [
+        {
+          "amount": 100,
+          "name": "Fjordiness"
+        },
+        {
+          "amount": 1000,
+          "name": "Dad powa"
+        }
+      ],
+      "name": "New Candidate",
+      "owner": "asd@asd.com",
+      "upVotes": "5",
+      "downVotes": "2"
+    }
+  },
+  "pending":{
+    "-LjrI8WaoUc2FbdeVSE9": {
+      "description": "This is a description, with a shitty keyboard",
+      "imagePath": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3K7G8WSxGxaRAZ5SOVhO2bmEQg9d2AgvA_1TsddKUeTI9FExX",
+      "ingredients": [
+        {
+          "amount": 100,
+          "name": "Fjordiness"
+        },
+        {
+          "amount": 1000,
+          "name": "Dad powa"
+        }
+      ],
+      "name": "New Candidate",
+      "owner": "asd@asd.com",
+      "upVotes": "0",
+      "downVotes": "0"
+    }
+  }
+  }
+}

@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth-routing.module';
 import { ErrorDisplayComponent } from 'src/app/shared/error-display/error-display.component';
 import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-spinner.component';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 
 @NgModule({
@@ -16,7 +18,8 @@ import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-
     imports: [
         FormsModule,
         CommonModule,
-        AuthRoutingModule
+        AuthRoutingModule,
+        AngularFireModule,
     ],
 })
 export class AuthModule {

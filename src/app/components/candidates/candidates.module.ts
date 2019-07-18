@@ -7,6 +7,7 @@ import { CandidateAddComponent } from './candidate-add/candidate-add.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CandidatesRoutingModule } from './candidates-routes.module';
+import { CandidateVoteComponent } from './candidate-vote/candidate-vote.component';
 
 @NgModule({
     declarations: [
@@ -15,6 +16,7 @@ import { CandidatesRoutingModule } from './candidates-routes.module';
         CandidateDetailComponent,
         CandidateItemComponent,
         CandidateAddComponent,
+        CandidateVoteComponent
     ],
     imports:[
         CandidatesRoutingModule,

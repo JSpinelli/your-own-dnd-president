@@ -2,11 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Ingredient } from '../../shared/ingredient.model'
 import { IngredientsService } from '../../services/ingredients.service';
 import { Subscription } from 'rxjs';
+import { addIngredientAnim } from '../../shared/animations';
 
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
-  styles: []
+  styles: [],
+  animations: [
+    addIngredientAnim,
+  ]
 })
 
 export class ShoppingListComponent implements OnInit, OnDestroy {
@@ -31,6 +35,10 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  animationStarted(event){
+    console.log("The animation started");
   }
 
 }

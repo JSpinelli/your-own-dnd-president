@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { CandidatesComponent } from './components/candidates/candidate.component';
-import { AuthGuard } from './components/auth/auth.guard';
-import { AuthComponent } from './components/auth/auth.component';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 const appRoutes: Routes = [
-    { path: '', canActivate: [AuthGuard], component: AuthComponent },
+    { path: '', redirectTo: '/auth', pathMatch: 'full' },
     { path: 'candidates', loadChildren: './components/candidates/candidates.module#CandidatesModule' },
-    //{ path: '**', redirectTo: '' }
+    { path: 'auth', loadChildren: './components/auth/auth.module#AuthModule' },
+    { path: 'shopping-list', loadChildren: './components/shopping-list/shopping-list.module#ShoppingListModule' },
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes, {preloadingStrategy: PreloadAllModules})
     ],
     exports: [RouterModule]
 })

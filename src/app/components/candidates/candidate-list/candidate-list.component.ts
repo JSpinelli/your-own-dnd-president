@@ -4,6 +4,7 @@ import { CandidateService } from 'src/app/services/candidates.service';
 import { ActivatedRoute, Data } from '@angular/router';
 import { take } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-candidate-list',
   templateUrl: './candidate-list.component.html',
@@ -29,7 +30,7 @@ export class CandidatesListComponent implements OnInit {
           console.log('Error: ' + error);
           this.errorMsg = 'There has been an error retrieving the candidates list, Sorry';
       }
-  );;
+  );
   }
 
   showAmount(){
