@@ -101,9 +101,9 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
       values.candidateInfo.desc,
       values.candidateInfo.img,
       ingredients,
-      this.auth.user.getValue().token
+      this.auth.user.getValue().id
       );
-    if (this.editMode) {
+    if (!this.editMode) {
       this.candidates.updateCandidate(candidateToAdd, this.id);
     } else {
       this.candidates.registerNewCandidate(candidateToAdd);

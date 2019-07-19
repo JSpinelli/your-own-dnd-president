@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { throwError, BehaviorSubject } from 'rxjs';
+import { throwError, BehaviorSubject, Observable } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
-import {environment} from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { AngularFireAuth } from '@angular/fire/auth';
 //import { auth } from 'firebase/app';
 
@@ -18,14 +18,15 @@ export interface AuthResponseData {
     registered?: boolean;
 }
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class Authservice {
 
     user = new BehaviorSubject<User>(null);
+    userObs;
     tokenExpirationTimer;
 
-    signUp_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key='+environment.firebaseAPIKey;
-    signIn_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key='+environment.firebaseAPIKey
+    signUp_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' + environment.firebaseAPIKey;
+    signIn_URL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + environment.firebaseAPIKey
 
     constructor(private http: HttpClient, private router: Router, private firebaseAuth: AngularFireAuth) { }
 
@@ -44,15 +45,19 @@ export class Authservice {
     }
 
     // signIn(userEmail: string, userPass: string) {
-    //     return this.firebaseAuth.auth.signInWithEmailAndPassword(userEmail,userPass).then(
-    //         value => {
-    //             console.log('It worked');
-    //         })
-    //     .catch(
-    //         err => {
-    //             console.log(err);
-    //         }
-    //     );
+    //     this.firebaseAuth.auth.signInWithEmailAndPassword(userEmail, userPass)
+    //         .then(
+    //             value => {
+    //                 console.log('It worked');
+    //                 this.userObs=this.firebaseAuth.user;
+    //             })
+    //         .catch(
+    //             err => {
+    //                 return null;
+    //                 console.log(err);
+    //             }
+    //         );
+    //     return this.userObs;
     // }
 
     signUp(userEmail: string, userPass: string) {
@@ -70,6 +75,7 @@ export class Authservice {
     }
 
     private authUser(email: string, localId: string, idToken: string, expiresIn: number) {
+        console.log(email + localId + idToken);
         const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
         const user = new User(email, localId, idToken, expirationDate);
         this.user.next(user);
@@ -104,18 +110,18 @@ export class Authservice {
         }
     }
 
-    logout(){
+    logout() {
         this.user.next(null);
         localStorage.removeItem('userData');
         this.router.navigate(['/auth']);
-        if (this.tokenExpirationTimer){
+        if (this.tokenExpirationTimer) {
             clearTimeout(this.tokenExpirationTimer);
         }
-        this.tokenExpirationTimer=null;
+        this.tokenExpirationTimer = null;
     }
 
     autoLogout(expirationTime: number) {
-        this.tokenExpirationTimer = setTimeout(() =>{
+        this.tokenExpirationTimer = setTimeout(() => {
             this.logout();
         }, expirationTime);
     }

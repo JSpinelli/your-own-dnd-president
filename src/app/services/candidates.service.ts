@@ -1,18 +1,17 @@
 import { Injectable, EventEmitter, OnInit } from '@angular/core';
 import { Candidate } from '../shared/candidate.model';
 import { LoggerService } from './logger.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Authservice } from '../components/auth/auth.service';
 import { environment } from 'src/environments/environment';
-import { CandidateVote } from '../shared/candidateVote.model';
 
 @Injectable({ providedIn: 'root' })
 export class CandidateService {
 
     recipeSelected = new EventEmitter<Candidate>();
-    private candidatesToVote: CandidateVote[] = [];
     private userCandidates: Candidate[] = [];
+    private allCandidates: Candidate[] = [];
     private url = environment.firebaseURL;
     private errorMsg = null;
 
@@ -20,39 +19,43 @@ export class CandidateService {
 
     fetchCandidates() {
         return this.http.get(this.url + '.json').pipe(
-                map(responseData => {
-                    const candidatesArray = [];
-                    for (const key in responseData) {
-                        if (responseData.hasOwnProperty(key)) {
-                            candidatesArray.push({ ...responseData[key], id: key });
-                        }
+            map(responseData => {
+                const candidatesArray = [];
+                for (const key in responseData) {
+                    if (responseData.hasOwnProperty(key)) {
+                        const candidateToAdd: Candidate = { ...responseData[key] };
+                        candidateToAdd.id = key;
+                        candidatesArray.push(candidateToAdd);
                     }
-                    this.userCandidates = candidatesArray;
-                    return candidatesArray;
-                }));
+                }
+                this.allCandidates = candidatesArray;
+                return this.allCandidates;
+            }));
     }
-    // fetchCandidates() {
-    //     this.http.get('https://your-own-dnd-president.firebaseio.com/candidatesOfUsers' + '.json' + '?key="' + this.auth.user.value.id + '"').pipe(
-    //         map(responseData => {
-    //             const candidatesOfUser = [];
-    //             for (const key in responseData) {
-    //                 if (responseData.hasOwnProperty(key)) {
-    //                     for (const key2 in responseData[key]) {
-    //                         if (responseData[key].hasOwnProperty(key2)) {
-    //                             candidatesOfUser.push(key2);
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }));
-    // }
 
-    fetchCandidatesToVote() {
+    upVote(id: number) {
+        this.http.patch(
+            this.url + '/' + this.allCandidates[id].id + '/votes/' + this.userCandidates[id].votes.length + '.json',
+             { id: this.auth.user.getValue().id, value: true })
+            .subscribe(
+                responseData => {
+                    console.log('Patch data ' + responseData);
+                }
+            );
+    }
 
+    downVote(id: number) {
+        this.http.patch(
+            this.url + '/' + this.allCandidates[id].id + '/votes/' + this.userCandidates[id].votes.length + '.json', 
+            { id: this.auth.user.getValue().id, value: false })
+            .subscribe(
+                responseData => {
+                    console.log('Patch data ' + responseData);
+                }
+            );
     }
 
     registerNewCandidate(candidate: Candidate) {
-        this.userCandidates.push(candidate);
         this.http.post(this.url + '.json', candidate)
             .subscribe(
                 responseData => {
@@ -62,25 +65,54 @@ export class CandidateService {
     }
 
     updateCandidate(candidate: Candidate, index: number) {
-        this.userCandidates[index] = candidate;
+        this.http.patch(this.url + '/' + this.allCandidates[index].id + '.json', candidate)
+            .subscribe(
+                responseData => {
+                    console.log('Patch data ' + responseData);
+                }
+            );
     }
 
     getCandidate(index: number) {
-        return this.userCandidates[index];
+        return this.allCandidates[index];
     }
 
     deleteCandidate(index: number) {
-        this.http.delete(this.url + '/' + this.userCandidates[index].id + '.json').subscribe(
+        this.http.delete(this.url + '/' + this.allCandidates[index].id + '.json').subscribe(
             responseData => { console.log('This is the response ' + responseData); }
         );
-        this.userCandidates.splice(index, 1);
+        this.allCandidates.splice(index, 1);
     }
 
     getTotal(): number {
+        return this.allCandidates.length;
+    }
+
+    getUserTotal():number{
         return this.userCandidates.length;
     }
 
     error() {
         return this.errorMsg;
+    }
+
+    fetchUserCandidates(){
+        return this.http.get(this.url +'.json',
+            { params: new HttpParams().set('orderBy','"owner"').append('equalTo','"'+this.auth.user.getValue().id+'"')})
+            .pipe(
+                map(responseData => {
+                const candidatesArray = [];
+                for (const key in responseData) {
+                    if (responseData.hasOwnProperty(key)) {
+                        let candidateToAdd: Candidate = { ...responseData[key] };
+                        candidateToAdd.id = key;
+                        candidatesArray.push(candidateToAdd);
+                        console.log(candidateToAdd);
+                    }
+                }
+                this.userCandidates = candidatesArray;
+                //console.log("First candidate "+this.userCandidates[0].name+ ' Votes ' + this.userCandidates[0].votes[1].id);
+                return this.userCandidates;
+            }));
     }
 }

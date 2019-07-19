@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Candidate } from 'src/app/shared/candidate.model';
 import { CandidateService } from 'src/app/services/candidates.service';
-import { ActivatedRoute, Data } from '@angular/router';
+import { ActivatedRoute} from '@angular/router';
 import { take } from 'rxjs/operators';
+import { Authservice } from '../../auth/auth.service';
 
 
 @Component({
@@ -16,14 +17,17 @@ export class CandidatesListComponent implements OnInit {
   errorMsg = null;
   isLoading = false;
   
-  constructor(private candidateService: CandidateService, private route: ActivatedRoute) { }
+  constructor(private candidateService: CandidateService, private route: ActivatedRoute, private auth:Authservice) { }
 
   ngOnInit() {
     this.candidateService.fetchCandidates().pipe(take(1)).subscribe(
       responseData => {
           console.log("Candidates Fetched");
           const newCandidates = [];
-          newCandidates.push(...responseData);
+          for (let index = 0; index < responseData.length; index++) {
+            if (responseData[index].owner==this.auth.user.getValue().id)
+            newCandidates.push(responseData[index]);
+          }
           this.candidates = newCandidates;
       },
       error => {

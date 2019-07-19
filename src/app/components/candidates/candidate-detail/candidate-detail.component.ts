@@ -4,6 +4,7 @@ import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
 import { ActivatedRoute, Params, Router, Data } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Authservice } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-candidate-detail',
@@ -17,10 +18,12 @@ export class CandidateDetailComponent implements OnInit {
   subscription: Subscription;
   hasNext = true;
   hasPrevious = true;
+  isEditable = false;
 
   constructor(
     private candServ: CandidateService,
     private candMatchServ: IngredientsService,
+    private auth : Authservice,
     private route: ActivatedRoute,
     private router: Router) {
   }
@@ -30,6 +33,7 @@ export class CandidateDetailComponent implements OnInit {
       .subscribe(
         (data: Data) => {
           this.candidateToDisplay = data.candidate;
+          this.isEditable = this.candidateToDisplay.owner == this.auth.user.getValue().id;
         }
       );
     this.route.params

@@ -15,7 +15,7 @@ export class AuthIntercetorService implements HttpInterceptor {
                 exhaustMap(user => {
                     if (user != null) {
                         const modReq = req.clone({
-                            params: new HttpParams().set('auth', user.token)
+                            params: req.params.append('auth', user.token)
                         })
                         return next.handle(modReq);
                     } else {

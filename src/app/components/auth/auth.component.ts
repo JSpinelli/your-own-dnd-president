@@ -16,9 +16,10 @@ export class AuthComponent implements OnInit {
     logInMode = true;
     isLoading = false;
     errorMessage = null;
-    testing = false;
+    testing = true;
 
     authObs: Observable<AuthResponseData>;
+    //authObs: Observable<firebase.User>;
 
     constructor(private auth: Authservice, private router: Router, private afAuth: AngularFireAuth) {
 
@@ -33,27 +34,6 @@ export class AuthComponent implements OnInit {
     switchMode() {
         this.logInMode = !this.logInMode;
     }
-
-    // onSubmit(form: NgForm) {
-    //     let email;
-    //     let password;
-    //     if (this.testing) {
-    //         email = 'asd@asd.com';
-    //         password = 'asdasd';
-    //     } else {
-    //         if (!form.valid) {
-    //             return;
-    //         }
-    //         email = form.value.email;
-    //         password = form.value.password;
-    //     }
-    //     if (this.logInMode) {
-    //         this.auth.signIn(email, password);
-    //     } else {
-    //         this.authObs = this.auth.signUp(email, password);
-    //     }
-    //     form.reset();
-    // }
 
     onSubmit(form: NgForm) {
         let email;
@@ -86,5 +66,31 @@ export class AuthComponent implements OnInit {
             });
         form.reset();
     }
+
+        // onSubmit(form: NgForm) {
+    //     let email;
+    //     let password;
+    //     if (this.testing) {
+    //         email = 'asd@asd.com';
+    //         password = 'asdasd';
+    //     } else {
+    //         if (!form.valid) {
+    //             return;
+    //         }
+    //         email = form.value.email;
+    //         password = form.value.password;
+    //     }
+    //     if (this.logInMode) {
+    //         this.auth.signIn(email, password).subscribe(
+    //             () => {
+    //                 this.isLoading = false;
+    //                 this.router.navigate(['/candidates']);
+    //             }
+    //         );
+    //     } else {
+    //         this.authObs = this.auth.signUp(email, password);
+    //     }
+    //     form.reset();
+    // }
 
 }

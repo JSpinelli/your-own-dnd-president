@@ -1,6 +1,6 @@
-<div class="col-md-6">
-    <div class="row">
-        <a class="list-group-item clearfix" [routerLink]="['/candidates',id]" [@addCandidateAnim]>
+<div class="col-md-8">
+    <div class="row list-group-item clearfix"  [@addCandidateAnim]>
+        <a  [routerLink]="['/candidates',id]">
             <div class="col-md-3">
                 <img [src]="candidate.imagePath" alt="{{candidate.name}}" class="img-responsive"
                     style="max-height: 150px;">
@@ -11,10 +11,11 @@
                 </h3>
                 <p class="list-group-item-text"> {{candidate.description}} </p>
             </div>
-            <div *ngIf="isVote" class="col-md-3">
-                <button type="button" class="btn btn-default">+</button>
-                <button type="button" class="btn btn-default">-</button>
-            </div>
         </a>
+        <div *ngIf="isVote" class="col-md-3">
+            <button type="button" class="btn btn-default" (click)="onUpVote()" [disabled]="voteUp" [ngClass]="voteUp? 'active': ' '">+</button>
+            <button type="button" class="btn btn-default" (click)="onDownVote()" [disabled]="voteDown"  [ngClass]="voteDown? 'active' :' '">-</button>
+            <h4>Votes {{votes}}</h4>
+        </div>
     </div>
 </div>
