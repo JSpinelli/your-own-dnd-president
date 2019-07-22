@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Candidate } from '../../../shared/candidate.model';
+import { AngularFireAction, DatabaseSnapshot } from '@angular/fire/database';
 import { CandidateService } from '../../../services/candidates.service';
-import { take } from 'rxjs/operators';
+import { Candidate } from '../../../shared/candidate.model';
 
 @Component({
   selector: 'app-candidate-vote',
@@ -10,19 +10,16 @@ import { take } from 'rxjs/operators';
 })
 export class CandidateVoteComponent implements OnInit {
 
-  candidates: Candidate[];
+  candidates: AngularFireAction<DatabaseSnapshot<Candidate>>[];
   errorMsg = null;
   loading = true;
 
   constructor(private candidateService: CandidateService) { }
 
   ngOnInit() {
-    this.candidateService.fetchCandidates().pipe(take(1)).subscribe(
+    this.candidateService.fetchCandidates().subscribe(
         responseData => {
-            console.log("Candidates Fetched");
-            const newCandidates = [];
-            newCandidates.push(...responseData);
-            this.candidates = newCandidates;
+            this.candidates = responseData;
         },
         error => {
             console.log('Error: ' + error);
@@ -30,5 +27,6 @@ export class CandidateVoteComponent implements OnInit {
         }
     );
   }
+  
 
 }

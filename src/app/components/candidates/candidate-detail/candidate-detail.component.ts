@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Candidate } from 'src/app/shared/candidate.model';
-import { IngredientsService } from 'src/app/services/ingredients.service';
-import { CandidateService } from 'src/app/services/candidates.service';
-import { ActivatedRoute, Params, Router, Data } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { AngularFireAction, DatabaseSnapshot } from '@angular/fire/database';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CandidateService } from 'src/app/services/candidates.service';
+import { IngredientsService } from 'src/app/services/ingredients.service';
+import { Candidate } from 'src/app/shared/candidate.model';
 import { Authservice } from '../../auth/auth.service';
 
 @Component({
@@ -13,7 +14,7 @@ import { Authservice } from '../../auth/auth.service';
 })
 export class CandidateDetailComponent implements OnInit {
 
-  @Input() candidateToDisplay: Candidate;
+  @Input() candidateToDisplay: AngularFireAction<DatabaseSnapshot<Candidate>>;
   @Input() id: number;
   subscription: Subscription;
   hasNext = true;
@@ -33,7 +34,7 @@ export class CandidateDetailComponent implements OnInit {
       .subscribe(
         (data: Data) => {
           this.candidateToDisplay = data.candidate;
-          this.isEditable = this.candidateToDisplay.owner == this.auth.user.getValue().id;
+          this.isEditable = this.candidateToDisplay.owner == this.auth.currentUserId;
         }
       );
     this.route.params

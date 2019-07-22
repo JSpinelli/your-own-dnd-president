@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, Params, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { CanComponentDeactivate } from '../../../services/can-deactivate-guard.service';
-import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
-import { IngredientsService } from 'src/app/services/ingredients.service';
 import { CandidateService } from 'src/app/services/candidates.service';
+import { IngredientsService } from 'src/app/services/ingredients.service';
 import { Candidate } from 'src/app/shared/candidate.model';
 import { Ingredient } from 'src/app/shared/ingredient.model';
+import { CanComponentDeactivate } from '../../../services/can-deactivate-guard.service';
 import { Authservice } from '../../auth/auth.service';
 
 @Component({
@@ -18,6 +18,7 @@ import { Authservice } from '../../auth/auth.service';
 export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
 
   id: number;
+  key:string;
   showDescField: boolean[] = [];
   candidateForm: FormGroup;
   ingredientsForm: FormArray;
@@ -33,7 +34,7 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     private router: Router,
     private route: ActivatedRoute,
     private candidates: CandidateService,
-    private auth:Authservice,
+    private auth: Authservice,
   ) { }
 
   ngOnInit() {
@@ -53,7 +54,9 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     let candDesc = "";
     let candImg = "";
     if (this.editMode) {
-      const candidate = this.candidates.getCandidate(this.id);
+      const candidateRef = this.candidates.getCandidate(this.id);
+      const candidate = candidateRef.payload.val();
+      this.key=candidateRef.key;
       for (let ingredient of candidate.ingredients) {
         ingredientList.push(new FormGroup({
           name: new FormControl(ingredient.name, Validators.required),
@@ -101,10 +104,10 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
       values.candidateInfo.desc,
       values.candidateInfo.img,
       ingredients,
-      this.auth.user.getValue().id
+      this.auth.currentUserId,
       );
-    if (!this.editMode) {
-      this.candidates.updateCandidate(candidateToAdd, this.id);
+    if (this.editMode) {
+      this.candidates.updateCandidate(candidateToAdd, this.key);
     } else {
       this.candidates.registerNewCandidate(candidateToAdd);
     }

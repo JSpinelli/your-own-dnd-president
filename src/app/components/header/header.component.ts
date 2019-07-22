@@ -1,6 +1,7 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { Authservice } from '../auth/auth.service';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
+import { Authservice } from '../auth/auth.service';
 
 @Component({
     selector: 'app-header',
@@ -11,15 +12,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     isAuth=false;
     private userSub: Subscription;
 
-    constructor(private authService: Authservice) { }
+    constructor(private afAuth: AngularFireAuth, private auth: Authservice) { }
 
     collapsed = true;
 
     @Output() headerClick = new EventEmitter<number>();
 
     ngOnInit() {
-        this.userSub = this.authService.user.subscribe(
+        this.userSub =  this.afAuth.authState.subscribe(
             user => {
+                console.log(user);
                 this.isAuth = !!user;
             }
         );
@@ -37,7 +39,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.headerClick.emit(1);
     }
 
-    logout(){
-        this.authService.logout();
+    logout() {
+        this.auth.signOut();
     }
 }

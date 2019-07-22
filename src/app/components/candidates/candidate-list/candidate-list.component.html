@@ -6,6 +6,12 @@
 <hr>
 <div class="row">
     <div class="col-xs-12">
-        <app-candidate-item *ngFor= "let candidate of candidates;let i = index" [candidate]="candidate" [id]="i"></app-candidate-item>
-    </div>
+        <app-candidate-item 
+            *ngFor="let candidate of candidates;let i = index" 
+            [candidate]="candidate.payload.val()" 
+            [id]="i" 
+            [key]="candidate.key" 
+            [isVote]="false">
+        </app-candidate-item>
+        </div>
 </div>

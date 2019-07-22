@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Candidate } from 'src/app/shared/candidate.model';
-import { CandidateService } from 'src/app/services/candidates.service';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
+import { CandidateService } from 'src/app/services/candidates.service';
+import { Candidate } from 'src/app/shared/candidate.model';
 import { Authservice } from '../../auth/auth.service';
 
 
@@ -22,13 +22,7 @@ export class CandidatesListComponent implements OnInit {
   ngOnInit() {
     this.candidateService.fetchCandidates().pipe(take(1)).subscribe(
       responseData => {
-          console.log("Candidates Fetched");
-          const newCandidates = [];
-          for (let index = 0; index < responseData.length; index++) {
-            if (responseData[index].owner==this.auth.user.getValue().id)
-            newCandidates.push(responseData[index]);
-          }
-          this.candidates = newCandidates;
+          this.candidates = responseData;
       },
       error => {
           console.log('Error: ' + error);

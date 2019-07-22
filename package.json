@@ -25,7 +25,7 @@
     "@firebaseui/ng-bootstrap": "^0.4.1",
     "@ng-bootstrap/ng-bootstrap": "^5.1.0",
     "bootstrap": "^3.4.1",
-    "firebase": "^6.3.0",
+    "firebase": "^6.3.1",
     "font-awesome": "^4.7.0",
     "ng2-adsense": "^6.0.0",
     "rxjs": "~6.4.0",

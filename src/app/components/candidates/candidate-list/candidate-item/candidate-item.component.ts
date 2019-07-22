@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Candidate } from 'src/app/shared/candidate.model';
+import { Component, Input, OnInit } from '@angular/core';
+import { Authservice } from 'src/app/components/auth/auth.service';
 import { CandidateService } from 'src/app/services/candidates.service';
 import { addCandidateAnim } from 'src/app/shared/animations';
-import { Authservice } from 'src/app/components/auth/auth.service';
+import { Candidate } from 'src/app/shared/candidate.model';
 
 @Component({
   selector: 'app-candidate-item',
@@ -15,22 +15,26 @@ export class CandidateItemComponent implements OnInit {
   @Input() candidate: Candidate;
   @Input() id: number;
   @Input() isVote: boolean;
+  @Input() key: string;
   votes = 0;
   voteUp = null;
   voteDown = null;
   alreadyVoted = false;
 
-  constructor(private candidateService: CandidateService, private auth: Authservice) { }
+  constructor(private candidateService: CandidateService, private auth: Authservice, ) { }
 
   ngOnInit() {
-    this.candidate.votes.forEach(element => {
-      if (element) {
+    console.log(this.candidate.votes);
+    console.log(this.candidate.name);
+    for (const key in this.candidate.votes) {
+      if (this.candidate.votes.hasOwnProperty(key)) {
+        const element = this.candidate.votes[key];
         if (element.value) {
           this.votes = this.votes + 1;
         } else {
           this.votes = this.votes - 1;
         }
-        if (element.id == this.auth.user.getValue().id) {
+        if (key === this.auth.currentUserId) {
           this.alreadyVoted = true;
           if (element.value) {
             this.voteUp = true;
@@ -41,17 +45,17 @@ export class CandidateItemComponent implements OnInit {
           }
         }
       }
-    });
+    }
   }
 
   onUpVote() {
-    this.candidateService.upVote(this.id);
+    this.candidateService.upVote(this.key);
     this.voteUp = true;
     this.voteDown = false;
   }
 
   onDownVote() {
-    this.candidateService.downVote(this.id);
+    this.candidateService.downVote(this.key);
     this.voteUp = false;
     this.voteDown = true;
   }

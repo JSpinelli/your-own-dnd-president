@@ -1,20 +1,21 @@
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule} from '@angular/core';
-
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header/header.component';
-import { BasicHighlightDirective } from './directives/basic-highlight.directive';
-import { BestHighlightDirective } from './directives/best-highlight.directive';
-import { DropddownDirective } from './shared/dropdown.directive';
-import { AppRoutingModule } from './app.routing.module';
-import { ShortenPipe } from './pipes/shorten.pipe';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthIntercetorService } from './components/auth/auth-interceptor.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app.routing.module';
+import { AuthModule } from './components/auth/auth.module';
+import { HeaderComponent } from './components/header/header.component';
+import { BasicHighlightDirective } from './directives/basic-highlight.directive';
+import { BestHighlightDirective } from './directives/best-highlight.directive';
+import { ShortenPipe } from './pipes/shorten.pipe';
+import { DropddownDirective } from './shared/dropdown.directive';
+
 
 
 
@@ -34,10 +35,13 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AuthModule,
+    AngularFireAuthModule,
+    AngularFireDatabaseModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: AuthIntercetorService, multi: true} ],
+    //{provide: HTTP_INTERCEPTORS, useClass: AuthIntercetorService, multi: true} 
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
