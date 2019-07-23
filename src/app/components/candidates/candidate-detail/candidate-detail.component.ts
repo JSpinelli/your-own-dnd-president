@@ -14,7 +14,8 @@ import { Authservice } from '../../auth/auth.service';
 })
 export class CandidateDetailComponent implements OnInit {
 
-  @Input() candidateToDisplay: AngularFireAction<DatabaseSnapshot<Candidate>>;
+  @Input() candidateData: AngularFireAction<DatabaseSnapshot<Candidate>>;
+  candidateToDisplay: Candidate;
   @Input() id: number;
   subscription: Subscription;
   hasNext = true;
@@ -33,7 +34,8 @@ export class CandidateDetailComponent implements OnInit {
     this.route.data
       .subscribe(
         (data: Data) => {
-          this.candidateToDisplay = data.candidate;
+          this.candidateData = data.candidate;
+          this.candidateToDisplay = this.candidateData.payload.val();
           this.isEditable = this.candidateToDisplay.owner == this.auth.currentUserId;
         }
       );
@@ -41,8 +43,8 @@ export class CandidateDetailComponent implements OnInit {
       .subscribe(
         (params) => {
           this.id = params.id;
-          this.hasPrevious = !(this.id == 0);
-          this.hasNext = !(this.id == (this.candServ.getTotal() - 1));
+          this.hasPrevious = !(this.id === 0);
+          this.hasNext = !(this.id === (this.candServ.getTotal() - 1));
         }
       );
   }
@@ -61,6 +63,6 @@ export class CandidateDetailComponent implements OnInit {
   }
 
   deleteCandidate() {
-    this.candServ.deleteCandidate(this.id);
+    this.candServ.deleteCandidate(this.candidateData.key);
   }
 }

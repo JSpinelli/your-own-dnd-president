@@ -9,8 +9,9 @@ import { Authservice } from '../auth/auth.service';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
-    isAuth=false;
+    isAuth = false;
     private userSub: Subscription;
+    userName = '';
 
     constructor(private afAuth: AngularFireAuth, private auth: Authservice) { }
 
@@ -21,8 +22,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.userSub =  this.afAuth.authState.subscribe(
             user => {
-                console.log(user);
                 this.isAuth = !!user;
+                if (this.isAuth){
+                    this.userName = this.auth.currentUserDisplayName;
+                }
             }
         );
     }

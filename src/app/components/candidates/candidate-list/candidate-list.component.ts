@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { DataSnapshot } from '@angular/fire/database/interfaces';
 import { ActivatedRoute } from '@angular/router';
-import { take } from 'rxjs/operators';
 import { CandidateService } from 'src/app/services/candidates.service';
-import { Candidate } from 'src/app/shared/candidate.model';
 import { Authservice } from '../../auth/auth.service';
 
 
@@ -13,16 +12,22 @@ import { Authservice } from '../../auth/auth.service';
 })
 export class CandidatesListComponent implements OnInit {
 
-  candidates: Candidate[];
+  candidates: DataSnapshot[];
   errorMsg = null;
   isLoading = false;
-  
-  constructor(private candidateService: CandidateService, private route: ActivatedRoute, private auth:Authservice) { }
+
+  constructor(private candidateService: CandidateService, private route: ActivatedRoute, private auth: Authservice) { }
 
   ngOnInit() {
-    this.candidateService.fetchCandidates().pipe(take(1)).subscribe(
+    this.candidateService.fetchUserCandidates().on('value',
       responseData => {
-          this.candidates = responseData;
+        const newArray: DataSnapshot[] = [];
+        responseData.forEach(
+            (candidate) => {
+                newArray.push(candidate);
+            }
+          );
+        this.candidates = newArray;
       },
       error => {
           console.log('Error: ' + error);
@@ -31,7 +36,7 @@ export class CandidatesListComponent implements OnInit {
   );
   }
 
-  showAmount(){
+  showAmount() {
     console.log(this.candidates.length);
   }
 

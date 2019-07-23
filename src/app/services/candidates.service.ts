@@ -1,40 +1,57 @@
 import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import { AngularFireAction, AngularFireDatabase, AngularFireList, DatabaseSnapshot } from '@angular/fire/database';
 import { Observable, Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { Authservice } from '../components/auth/auth.service';
 import { Candidate } from '../shared/candidate.model';
 import { LoggerService } from './logger.service';
 
 @Injectable({ providedIn: 'root' })
-export class CandidateService {
+export class CandidateService implements OnDestroy {
 
     recipeSelected = new EventEmitter<Candidate>();
-    private userCandidates: Candidate[] = [];
-    private allCandidates: AngularFireAction<DatabaseSnapshot<Candidate>>[];
-    private url = environment.firebaseURL;
     private errorMsg = null;
     private candidatesList: AngularFireList<Candidate>;
-    private candidates: Observable<AngularFireAction<DatabaseSnapshot<Candidate>>[]>;
+    private candidatesObs: Observable<AngularFireAction<DatabaseSnapshot<Candidate>>[]>;
+    private candidates: AngularFireAction<DatabaseSnapshot<Candidate>>[];
+    private user: firebase.User;
     subscription: Subscription;
 
     constructor(private logger: LoggerService, private http: HttpClient, private auth: Authservice, private db: AngularFireDatabase) {
         this.candidatesList = db.list('candidates');
-        this.candidates = db.list<Candidate>('candidates').snapshotChanges();
+        this.candidatesObs = db.list<Candidate>('candidates').snapshotChanges();
+        this.candidatesObs.subscribe(
+            (candidates) => {
+                this.candidates = candidates;
+            }
+        );
+        this.subscription = this.auth.currentUserObservable.subscribe(
+            (user) => {
+                this.user = user;
+            }
+        );
     }
+
+    ngOnDestroy(){
+        this.subscription.unsubscribe();
+    }
+
     fetchCandidates() {
-        return this.candidates;
+        return this.candidatesObs;
+    }
+
+    fetchUserCandidates() {
+        return this.candidatesList.query.orderByChild('owner').equalTo(this.user.uid);
     }
 
     upVote(key: string) {
-        const addUpvote = this.db.list('candidates/' + key + '/votes');
-        addUpvote.set(this.auth.currentUserId, {value: true});
+        const addUpvote = this.db.list('candidates/' + key + '/votes/' + this.user.uid);
+        addUpvote.set('value', true);
     }
 
     downVote(key: string) {
-        const addUpvote = this.db.list('candidates/' + key + '/votes');
-        addUpvote.set(this.auth.currentUserId, {value: false});
+        const addUpvote = this.db.list('candidates/' + key + '/votes/' + this.user.uid);
+        addUpvote.set('value', false);
     }
 
     registerNewCandidate(candidate: Candidate) {
@@ -46,45 +63,22 @@ export class CandidateService {
     }
 
     getCandidate(index: number) {
-        return this.allCandidates[index];
+        return this.candidates[index];
     }
 
-    deleteCandidate(index: number) {
-        this.http.delete(this.url + '/' + this.allCandidates[index].id + '.json').subscribe(
-            responseData => { console.log('This is the response ' + responseData); }
-        );
-        this.allCandidates.splice(index, 1);
+    deleteCandidate(key: string) {
+        this.candidatesList.remove(key);
     }
 
     getTotal(): number {
-        return this.allCandidates.length;
+        return this.candidates.length;
     }
 
     getUserTotal(): number {
-        return this.userCandidates.length;
+        return this.candidates.length;
     }
 
     error() {
         return this.errorMsg;
     }
-
-    // fetchUserCandidates() {
-    //     return this.http.get(this.url + '.json',
-    //         { params: new HttpParams().set('orderBy', '"owner"').append('equalTo', '"' + this.auth.user.getValue().id + '"') })
-    //         .pipe(
-    //             map(responseData => {
-    //                 const candidatesArray = [];
-    //                 for (const key in responseData) {
-    //                     if (responseData.hasOwnProperty(key)) {
-    //                         let candidateToAdd: Candidate = { ...responseData[key] };
-    //                         candidateToAdd.id = key;
-    //                         candidatesArray.push(candidateToAdd);
-    //                         console.log(candidateToAdd);
-    //                     }
-    //                 }
-    //                 this.userCandidates = candidatesArray;
-    //                 //console.log("First candidate "+this.userCandidates[0].name+ ' Votes ' + this.userCandidates[0].votes[1].id);
-    //                 return this.userCandidates;
-    //             }));
-    // }
 }

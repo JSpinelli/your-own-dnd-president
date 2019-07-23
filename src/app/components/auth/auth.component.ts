@@ -17,7 +17,7 @@ export class AuthComponent implements OnInit {
     logInMode = true;
     isLoading = false;
     errorMessage = null;
-    testing = true;
+    testing = false;
 
     //authObs: Observable<AuthResponseData>;
     authObs: Observable<firebase.User>;

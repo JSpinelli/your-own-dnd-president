@@ -24,8 +24,6 @@ export class CandidateItemComponent implements OnInit {
   constructor(private candidateService: CandidateService, private auth: Authservice, ) { }
 
   ngOnInit() {
-    console.log(this.candidate.votes);
-    console.log(this.candidate.name);
     for (const key in this.candidate.votes) {
       if (this.candidate.votes.hasOwnProperty(key)) {
         const element = this.candidate.votes[key];

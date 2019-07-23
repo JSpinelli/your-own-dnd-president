@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
-import { throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 export interface AuthResponseData {
     kind: string;
@@ -18,12 +19,12 @@ export interface AuthResponseData {
 @Injectable({ providedIn: 'root' })
 export class Authservice {
 
-    authState: firebase.User = null;r;
+    authState: Subject<firebase.User> = new Subject<firebase.User>();
 
     constructor(private http: HttpClient, private router: Router, private firebaseAuth: AngularFireAuth) {
 
         this.firebaseAuth.authState.subscribe((auth) => {
-            this.authState = auth;
+            this.authState.next(auth);
         });
     }
 
@@ -31,8 +32,7 @@ export class Authservice {
         return this.firebaseAuth.auth.signInWithEmailAndPassword(userEmail, userPass)
             .then(
                 credential => {
-                    this.authState = credential.user;
-                    console.log(this.authState);
+                    this.authState.next(credential.user);
                 })
             .catch(
                 err => {
@@ -44,7 +44,7 @@ export class Authservice {
     signUp(email: string, password: string) {
         return this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
             .then((credential) => {
-                this.authState = credential.user;
+                this.authState.next(credential.user);
             })
             .catch(error => console.log(error));
     }
@@ -60,6 +60,7 @@ export class Authservice {
 
     signOut(): void {
         this.firebaseAuth.auth.signOut();
+        this.authState.complete();
         this.router.navigate(['/']);
     }
 
@@ -68,22 +69,46 @@ export class Authservice {
     }
 
     get currentUserId(): string {
-        return this.authenticated ? this.authState.uid : '';
+        let id: string;
+        if (this.authenticated) {
+            this.authState.pipe(take(1), map((user) => {
+                id = user.uid;
+            }));
+        } else {
+            id = '';
+        }
+        return id;
     }
 
     // Returns current user data
-    get currentUser(): any {
-        return this.authenticated ? this.authState : null;
+    get currentUser(): firebase.User {
+        let user: firebase.User;
+        if (this.authenticated) {
+            this.authState.pipe(take(1), map((userF) => {
+                user = userF;
+            }));
+        } else {
+            user = null;
+        }
+        return user;
     }
 
     // Returns
-    get currentUserObservable(): any {
+    get currentUserObservable(): Observable<firebase.User> {
         return this.firebaseAuth.authState;
     }
 
     // Anonymous User
     get currentUserAnonymous(): boolean {
-        return this.authenticated ? this.authState.isAnonymous : false;
+        let isAnon: boolean;
+        if (this.authenticated) {
+            this.authState.pipe(take(1), map((user) => {
+                isAnon = user.isAnonymous;
+            }));
+        } else {
+            isAnon = null;
+        }
+        return isAnon;
     }
 
     // Returns current user display name or Guest
@@ -93,7 +118,15 @@ export class Authservice {
         } else if (this.currentUserAnonymous) {
             return 'Anonymous';
         } else {
-            return this.authState.displayName || 'User without a Name';
+            let name: string;
+            if (this.authenticated) {
+                this.authState.pipe(take(1), map((user) => {
+                    name = user.displayName;
+                }));
+            } else {
+                name = null;
+            }
+            return name || 'User without a Name';
         }
     }
 
@@ -122,7 +155,7 @@ export class Authservice {
     private socialSignIn(provider) {
         return this.firebaseAuth.auth.signInWithPopup(provider)
             .then((credential) => {
-                this.authState = credential.user;
+                this.authState.next(credential.user);
             })
             .catch(error => console.log(error));
     }
@@ -133,7 +166,7 @@ export class Authservice {
     anonymousLogin() {
         return this.firebaseAuth.auth.signInAnonymously()
             .then((credential) => {
-                this.authState = credential.user;
+                this.authState.next(credential.user);
             })
             .catch(error => console.log(error));
     }

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a routerLink="/" class="navbar-brand" appBestHighlight>Your own D&D Candidate</a>
+            <a routerLink="/candidates" class="navbar-brand" appBestHighlight>Your own D&D Candidate</a>
         </div>
 
         <div class=" collapse navbar-collapse">
@@ -24,11 +24,12 @@
                         <li> <a >Fetch Data</a></li>
                     </ul>
                 </li> -->
+                <label for="user">{{userName}}</label>
                 <li>
                     <a [routerLink]="['/auth']" routerLinkActive="active" *ngIf="!isAuth">Login</a>
                 </li>
                 <li> 
-                    <a routerLinkActive="active" style="cursor: pointer;" *ngIf="isAuth" (click)="logout()">Log Out</a> 
+                    <a [routerLink]="['/auth']" routerLinkActive="active" style="cursor: pointer;" *ngIf="isAuth" (click)="logout()">Log Out</a> 
                 </li>
             </ul>        
         </div>
