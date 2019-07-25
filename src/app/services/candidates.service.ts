@@ -14,7 +14,7 @@ export class CandidateService implements OnDestroy {
     private candidatesList: AngularFireList<Candidate>;
     private candidatesObs: Observable<AngularFireAction<DatabaseSnapshot<Candidate>>[]>;
     private candidates: AngularFireAction<DatabaseSnapshot<Candidate>>[];
-    private user: firebase.User;
+
     subscription: Subscription;
 
     constructor(private logger: LoggerService, private http: HttpClient, private auth: Authservice, private db: AngularFireDatabase) {
@@ -25,32 +25,27 @@ export class CandidateService implements OnDestroy {
                 this.candidates = candidates;
             }
         );
-        this.subscription = this.auth.currentUserObservable.subscribe(
-            (user) => {
-                this.user = user;
-            }
-        );
     }
 
-    ngOnDestroy(){
+    ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 
     fetchCandidates() {
-        return this.candidatesObs;
+        return this.candidatesList.query.orderByChild('ispublic').equalTo(true);
     }
 
     fetchUserCandidates() {
-        return this.candidatesList.query.orderByChild('owner').equalTo(this.user.uid);
+        return this.candidatesList.query.orderByChild('owner').equalTo(this.auth.currentUserId);
     }
 
     upVote(key: string) {
-        const addUpvote = this.db.list('candidates/' + key + '/votes/' + this.user.uid);
+        const addUpvote = this.db.list('candidates/' + key + '/votes/' + this.auth.currentUserId);
         addUpvote.set('value', true);
     }
 
     downVote(key: string) {
-        const addUpvote = this.db.list('candidates/' + key + '/votes/' + this.user.uid);
+        const addUpvote = this.db.list('candidates/' + key + '/votes/' + this.auth.currentUserId);
         addUpvote.set('value', false);
     }
 
@@ -62,8 +57,18 @@ export class CandidateService implements OnDestroy {
         this.candidatesList.update(key, candidate);
     }
 
-    getCandidate(index: number) {
-        return this.candidates[index];
+    publishCandidate(key:string){
+        const publish = this.db.list('candidates/' + key);
+        publish.set('ispublic',true);
+    }
+
+    privateCandidate(key:string){
+        const publish = this.db.list('candidates/' + key);
+        publish.set('ispublic',false);
+    }
+
+    getCandidate(key: string) {
+        return this.candidates.find((candidate) => candidate.key === key );
     }
 
     deleteCandidate(key: string) {

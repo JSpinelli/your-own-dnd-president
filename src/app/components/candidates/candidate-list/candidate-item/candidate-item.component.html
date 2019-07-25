@@ -1,8 +1,8 @@
 <div class="col-md-8">
     <div class="row list-group-item clearfix"  [@addCandidateAnim]>
-        <a  [routerLink]="['/candidates',id]">
+        <a  [routerLink]="['/candidates',key]">
             <div class="col-md-3">
-                <img [src]="candidate.imagePath" alt="{{candidate.name}}" class="img-responsive"
+                <img [src]="candidate.imagePath" alt="{{candidate.imageTags}}" title="{{candidate.imageTags}}" class="img-responsive"
                     style="max-height: 150px;">
             </div>
             <div class="col-md-6">

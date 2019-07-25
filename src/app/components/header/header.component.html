@@ -17,14 +17,9 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <!-- <li class="dropdown" style="cursor: pointer;" appDropdown *ngIf="isAuth">
-                    <a class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li> <a >Save Data</a></li>
-                        <li> <a >Fetch Data</a></li>
-                    </ul>
-                </li> -->
-                <label for="user">{{userName}}</label>
+                <li>
+                    <p class="navbar-text">Signed in as <a href="#" class="navbar-link">{{userName}}</a></p>
+                </li>
                 <li>
                     <a [routerLink]="['/auth']" routerLinkActive="active" *ngIf="!isAuth">Login</a>
                 </li>

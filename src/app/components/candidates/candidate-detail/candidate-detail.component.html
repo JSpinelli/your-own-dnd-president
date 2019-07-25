@@ -1,20 +1,23 @@
 <div class="row">
     <div class="col-md-4">
-        <div class="row">
-            <img src="{{candidateToDisplay.imagePath}}" alt="{{candidateToDisplay.name}}"
+        <div class="row form-group">
+            <img src="{{candidateToDisplay.imagePath}}" alt="{{candidateToDisplay.imageTags}}" title ="{{candidateToDisplay.imageTags}}"
                 class="img-responsive img-thumbnail center-block" style="max-height: 300px;">
         </div>
-        <div class="row" *ngIf="isEditable">
+        <div class="row form-group" >
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" (click)="AddIngredients()">
                         Add ingredients
                     </button>
-                    <button type="button" class="btn btn-info" [routerLink]="['../edit',id]">
+                    <button *ngIf="isEditable" type="button" class="btn btn-info" [routerLink]="['../edit',id]">
                         Edit
                     </button>
-                    <button type="button" class="btn btn-danger" (click)="deleteCandidate()"
+                    <button  *ngIf="isEditable" type="button" class="btn btn-danger" (click)="deleteCandidate()"
                         [routerLink]="['/candidates']">
                         Delete
+                    </button>
+                    <button  *ngIf="isEditable" type="button" class="btn btn-danger" (click)="publishCandidate()">
+                        Publish
                     </button>
                 </div>
         </div>
@@ -41,7 +44,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+<!-- <div class="row">
     <div class="col-md-12">
         <ul class="pager">
             <li class="previous">
@@ -53,4 +56,4 @@
             </li>
         </ul>
     </div>
-</div>
+</div> -->

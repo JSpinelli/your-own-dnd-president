@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -6,6 +7,7 @@ import { CandidateService } from 'src/app/services/candidates.service';
 import { IngredientsService } from 'src/app/services/ingredients.service';
 import { Candidate } from 'src/app/shared/candidate.model';
 import { Ingredient } from 'src/app/shared/ingredient.model';
+import { environment } from 'src/environments/environment';
 import { CanComponentDeactivate } from '../../../services/can-deactivate-guard.service';
 import { Authservice } from '../../auth/auth.service';
 
@@ -18,7 +20,7 @@ import { Authservice } from '../../auth/auth.service';
 export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
 
   id: number;
-  key:string;
+  key: string;
   showDescField: boolean[] = [];
   candidateForm: FormGroup;
   ingredientsForm: FormArray;
@@ -35,6 +37,7 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     private route: ActivatedRoute,
     private candidates: CandidateService,
     private auth: Authservice,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -50,14 +53,14 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
 
   loadInfo() {
     const ingredientList = new FormArray([]);
-    let candName = "";
-    let candDesc = "";
-    let candImg = "";
+    let candName = '';
+    let candDesc = '';
+    let candImg = '';
     if (this.editMode) {
-      const candidateRef = this.candidates.getCandidate(this.id);
+      const candidateRef = this.candidates.getCandidate(this.key);
       const candidate = candidateRef.payload.val();
-      this.key=candidateRef.key;
-      for (let ingredient of candidate.ingredients) {
+      this.key = candidateRef.key;
+      for (const ingredient of candidate.ingredients) {
         ingredientList.push(new FormGroup({
           name: new FormControl(ingredient.name, Validators.required),
           amount: new FormControl(ingredient.amount, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]),
@@ -93,19 +96,22 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     this.showDescField.splice(index, 1);
   }
 
-  onSubmit() {
+  async onSubmit() {
     const values = this.candidateForm.value;
     const ingredients: Ingredient[] = [];
     for (const ingToAdd of this.getControls()) {
       ingredients.push(new Ingredient(ingToAdd.value.name, ingToAdd.value.desc, ingToAdd.value.amount));
     }
+    const tags = await this.cloudVision(values.candidateInfo.img);
+    await this.naturalLanguage(values.candidateInfo.name, values.candidateInfo.desc,ingredients)
     const candidateToAdd = new Candidate(
       values.candidateInfo.name,
       values.candidateInfo.desc,
       values.candidateInfo.img,
       ingredients,
       this.auth.currentUserId,
-      );
+      tags
+    );
     if (this.editMode) {
       this.candidates.updateCandidate(candidateToAdd, this.key);
     } else {
@@ -114,6 +120,96 @@ export class CandidateAddComponent implements OnInit, CanComponentDeactivate {
     this.candidateForm.reset();
     this.changesSaved = true;
     this.router.navigate(['/candidates']);
+  }
+
+  async naturalLanguage(name: string, desc: string, ing: Ingredient[]) {
+    let text: string = name;
+    text = text + ' ' + desc;
+    for (let index = 0; index < ing.length; index++) {
+      const element = ing[index].name;
+      text = text + ' ' + element;
+    }
+    const body = {
+      document: {
+        type: 'PLAIN_TEXT',
+        content: text,
+      },
+      encodingType: 'UTF8'
+    };
+    await this.http.post(
+      'https://language.googleapis.com//v1/documents:analyzeSentiment?key=' + environment.VISION_KEY
+      , body).toPromise()
+      .then(
+        (responseData: any) => {
+          console.log('DOC SENTIMENT '+ responseData.documentSentiment.score);
+          const sentences = responseData.sentences;
+          sentences.forEach(sentence => {
+            console.log("The sentence: "+ sentence.text.content);
+            console.log("Sentiment: " + sentence.sentiment.score);
+          });
+        }
+    );
+  }
+
+  async cloudVision(uri: string): Promise<string> {
+    // Creates a client
+    const body = {
+      requests: [
+        {
+          features: [
+            {
+              type: 'LABEL_DETECTION'
+            },
+            {
+              type: 'FACE_DETECTION'
+            },
+            {
+              type: 'SAFE_SEARCH_DETECTION'
+            }
+          ],
+          image: {
+            source: {
+              imageUri: uri
+            }
+          }
+        }]
+    };
+    let tagsToReturn = '';
+    await this.http.post('https://vision.googleapis.com/v1/images:annotate?key=' + environment.VISION_KEY, body).toPromise().then(
+      (responseData: any) => {
+        console.log(responseData);
+        if (responseData.responses[0].hasOwnProperty('error')) {
+          tagsToReturn = 'It seems there was an error retrieving the labels';
+        } else {
+          const labels = responseData.responses[0].labelAnnotations;
+          const faces = responseData.responses[0].faceAnnotations;
+          const safe = responseData.responses[0].safeSearchAnnotation;
+          console.log('Labels:');
+          labels.forEach(label => {
+            tagsToReturn = tagsToReturn + ' - ' + label.description;
+            console.log(label.description);
+          }
+          );
+          console.log('Faces: ');
+          if (faces){
+            faces.forEach(face => {
+              console.log('JOY ' + face.joyLikelihood);
+              console.log('SORROW ' + face.sorrowLikelihood);
+              console.log('ANGER ' + face.angerLikelihood);
+              console.log('SURPRISE ' + face.surpriseLikelihood);
+              console.log('HEADWEAR ' + face.headwearLikelihood);
+            });
+          }
+          console.log('Safe: ');
+          console.log('ADULT ' + safe.adult);
+          console.log('SPOOF ' + safe.spoof);
+          console.log('MEDICAL ' + safe.medical);
+          console.log('VIOLENCE ' + safe.violence);
+          console.log('RACY ' + safe.racy);
+        }
+      },
+    );
+    return tagsToReturn;
   }
 
   canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {

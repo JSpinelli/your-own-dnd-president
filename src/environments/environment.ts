@@ -15,6 +15,7 @@ export const environment = {
     messagingSenderId: '441893166725',
     appId: '1:441893166725:web:019c04f762226d62'
   },
+  VISION_KEY: 'AIzaSyDXXjm_4f-gORdaPG6FhqJgQ3HSmHcXOVo'
 };
 
 

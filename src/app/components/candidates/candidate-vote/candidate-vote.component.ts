@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAction, DatabaseSnapshot } from '@angular/fire/database';
+import { DataSnapshot } from '@angular/fire/database/interfaces';
 import { CandidateService } from '../../../services/candidates.service';
-import { Candidate } from '../../../shared/candidate.model';
 
 @Component({
   selector: 'app-candidate-vote',
@@ -10,23 +9,28 @@ import { Candidate } from '../../../shared/candidate.model';
 })
 export class CandidateVoteComponent implements OnInit {
 
-  candidates: AngularFireAction<DatabaseSnapshot<Candidate>>[];
+  candidates: DataSnapshot[];
   errorMsg = null;
   loading = true;
 
   constructor(private candidateService: CandidateService) { }
 
   ngOnInit() {
-    this.candidateService.fetchCandidates().subscribe(
-        responseData => {
-            this.candidates = responseData;
-        },
-        error => {
-            console.log('Error: ' + error);
-            this.errorMsg = 'There has been an error retrieving the candidates list, Sorry';
-        }
+    this.candidateService.fetchCandidates().on('value',
+    responseData => {
+      const newArray: DataSnapshot[] = [];
+      responseData.forEach(
+          (candidate) => {
+              newArray.push(candidate);
+          }
+        );
+      this.candidates = newArray;
+    },
+    error => {
+        console.log('Error: ' + error);
+        this.errorMsg = 'There has been an error retrieving the candidates list, Sorry';
+    }
     );
   }
-  
 
 }

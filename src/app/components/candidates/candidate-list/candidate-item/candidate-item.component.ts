@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { Authservice } from 'src/app/components/auth/auth.service';
 import { CandidateService } from 'src/app/services/candidates.service';
@@ -21,7 +22,7 @@ export class CandidateItemComponent implements OnInit {
   voteDown = null;
   alreadyVoted = false;
 
-  constructor(private candidateService: CandidateService, private auth: Authservice, ) { }
+  constructor(private candidateService: CandidateService, private auth: Authservice, private http: HttpClient ) { }
 
   ngOnInit() {
     for (const key in this.candidate.votes) {
@@ -45,6 +46,7 @@ export class CandidateItemComponent implements OnInit {
       }
     }
   }
+
 
   onUpVote() {
     this.candidateService.upVote(this.key);

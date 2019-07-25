@@ -11,7 +11,7 @@ export class AuthIntercetorService implements HttpInterceptor {
         let token = this.auth.authState;
         if (token != null) {
             const modReq = req.clone({
-                params: req.params.append('auth', token.refreshToken)
+                params: req.params.append('auth', "sm")
             })
             return next.handle(modReq);
         } else {

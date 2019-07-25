@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="form-group" formGroupName="candidateInfo">
                     <div class="col-xs-3">
-                        <img [src]="imagePath.value ? imagePath.value : defaultImage" alt="Image for candidate"
+                        <img [src]="imagePath.value ? imagePath.value : defaultImage" onerror="this.src=defaultImage" alt="Image for candidate"
                             class="img-responsive img-thumbnail center-block" style="max-height: 300px;">
                     </div>
                     <div class="col-xs-9">

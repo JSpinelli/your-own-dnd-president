@@ -14,7 +14,12 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         Promise<boolean | UrlTree> |
         boolean |
         UrlTree {
-        return this.afAuth.auth ? true :  this.router.createUrlTree(['/auth']);
+        this.authService.autoLogin();
+        if (this.authService.currentUser != null) {
+            return true;
+        } else {
+           return this.router.createUrlTree(['/auth']);
+        }
     }
 
     // canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):

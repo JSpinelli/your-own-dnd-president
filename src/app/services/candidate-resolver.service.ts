@@ -8,8 +8,6 @@ import { CandidateService } from './candidates.service';
 @Injectable({providedIn: 'root'})
 export class CandidateResolver implements Resolve<AngularFireAction<DatabaseSnapshot<Candidate>>> {
 
-    id: number;
-
     constructor(private candidateService: CandidateService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):

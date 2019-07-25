@@ -36,7 +36,7 @@ export class CandidateDetailComponent implements OnInit {
         (data: Data) => {
           this.candidateData = data.candidate;
           this.candidateToDisplay = this.candidateData.payload.val();
-          this.isEditable = this.candidateToDisplay.owner == this.auth.currentUserId;
+          this.isEditable = this.candidateToDisplay.owner === this.auth.currentUserId;
         }
       );
     this.route.params
@@ -65,4 +65,9 @@ export class CandidateDetailComponent implements OnInit {
   deleteCandidate() {
     this.candServ.deleteCandidate(this.candidateData.key);
   }
+
+  publishCandidate(){
+    this.candServ.publishCandidate(this.candidateData.key);
+  }
+
 }

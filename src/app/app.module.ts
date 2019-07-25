@@ -37,7 +37,7 @@ import { DropddownDirective } from './shared/dropdown.directive';
     AngularFireModule.initializeApp(environment.firebase),
     AuthModule,
     AngularFireAuthModule,
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
   ],
   providers: [
     //{provide: HTTP_INTERCEPTORS, useClass: AuthIntercetorService, multi: true} 
