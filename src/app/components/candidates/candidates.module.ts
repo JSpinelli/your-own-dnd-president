@@ -4,6 +4,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ShortenPipe } from 'src/app/pipes/shorten.pipe';
+import { ShowApiInfoComponent } from './Api-Data/show-api-info.component';
 import { CandidateAddComponent } from './candidate-add/candidate-add.component';
 import { CandidateDetailComponent } from './candidate-detail/candidate-detail.component';
 import { CandidateItemComponent } from './candidate-list/candidate-item/candidate-item.component';
@@ -19,9 +21,11 @@ import { CandidatesRoutingModule } from './candidates-routes.module';
         CandidateDetailComponent,
         CandidateItemComponent,
         CandidateAddComponent,
-        CandidateVoteComponent
+        CandidateVoteComponent,
+        ShowApiInfoComponent,
+        ShortenPipe,
     ],
-    imports:[
+    imports: [
         CandidatesRoutingModule,
         ReactiveFormsModule,
         CommonModule,

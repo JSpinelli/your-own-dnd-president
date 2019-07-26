@@ -31,13 +31,17 @@ export class Authservice {
     }
 
     async autoLogin() {
-        this.user = JSON.parse(localStorage.getItem('userData'));
-        if (!this.user) {
-            console.log("No user");
-            return false;
+        if (this.user==null){
+            this.user = JSON.parse(localStorage.getItem('userData'));
+            if (!this.user) {
+                console.log("No user");
+                return false;
+            } else {
+                await this.user.refreshToken;
+                this.authState.next(this.user);
+            }
         } else {
-            await this.user.refreshToken;
-            this.authState.next(this.user);
+            return true;
         }
     }
 
@@ -78,6 +82,7 @@ export class Authservice {
     signOut(): void {
         this.firebaseAuth.auth.signOut();
         this.authState.complete();
+        localStorage.removeItem('userData');
         //this.router.navigate(['/auth']);
     }
 

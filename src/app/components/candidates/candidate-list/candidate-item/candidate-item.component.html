@@ -1,5 +1,5 @@
 <div class="col-md-8">
-    <div class="row list-group-item clearfix"  [@addCandidateAnim]>
+    <div class="row list-group-item clearfix">
         <a  [routerLink]="['/candidates',key]">
             <div class="col-md-3">
                 <img [src]="candidate.imagePath" alt="{{candidate.imageTags}}" title="{{candidate.imageTags}}" class="img-responsive"
@@ -9,7 +9,7 @@
                 <h3 class="list-group-item-heading">
                     {{candidate.name}}
                 </h3>
-                <p class="list-group-item-text"> {{candidate.description}} </p>
+                <p class="list-group-item-text"> {{candidate.description | shorten:150}} </p>
             </div>
         </a>
         <div *ngIf="isVote" class="col-md-3">

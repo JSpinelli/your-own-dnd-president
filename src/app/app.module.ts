@@ -13,7 +13,6 @@ import { AuthModule } from './components/auth/auth.module';
 import { HeaderComponent } from './components/header/header.component';
 import { BasicHighlightDirective } from './directives/basic-highlight.directive';
 import { BestHighlightDirective } from './directives/best-highlight.directive';
-import { ShortenPipe } from './pipes/shorten.pipe';
 import { DropddownDirective } from './shared/dropdown.directive';
 
 
@@ -26,7 +25,7 @@ import { DropddownDirective } from './shared/dropdown.directive';
     BasicHighlightDirective,
     BestHighlightDirective,
     DropddownDirective,
-    ShortenPipe,
+    //ShortenPipe,
   ],
   imports: [
     BrowserModule,

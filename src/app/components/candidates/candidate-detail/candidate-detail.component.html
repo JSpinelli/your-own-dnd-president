@@ -1,25 +1,48 @@
 <div class="row">
     <div class="col-md-4">
         <div class="row form-group">
-            <img src="{{candidateToDisplay.imagePath}}" alt="{{candidateToDisplay.imageTags}}" title ="{{candidateToDisplay.imageTags}}"
-                class="img-responsive img-thumbnail center-block" style="max-height: 300px;">
+            <img src="{{candidateToDisplay.imagePath}}" alt="{{candidateToDisplay.imageTags}}"
+                title="{{candidateToDisplay.imageTags}}" class="img-responsive img-thumbnail center-block"
+                style="max-height: 300px;">
         </div>
-        <div class="row form-group" >
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary" (click)="AddIngredients()">
-                        Add ingredients
-                    </button>
-                    <button *ngIf="isEditable" type="button" class="btn btn-info" [routerLink]="['../edit',id]">
-                        Edit
-                    </button>
-                    <button  *ngIf="isEditable" type="button" class="btn btn-danger" (click)="deleteCandidate()"
-                        [routerLink]="['/candidates']">
-                        Delete
-                    </button>
-                    <button  *ngIf="isEditable" type="button" class="btn btn-danger" (click)="publishCandidate()">
-                        Publish
-                    </button>
+        <div class="row form-group">
+            <div class="col-md-12 ">
+                <!-- <div class="btn-group form-group">
+                <button type="button" class="btn btn-primary" (click)="AddIngredients()">
+                    Add attributes to list
+                </button>
+            </div>
+            <hr> -->
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class=" well col-md-9 center-text">
+                        <h4>Votes: {{votes}}</h4>
+                    </div>
                 </div>
+                <div class="row form-group">
+                    <div *ngIf="candidateToDisplay.ispublic" class="btn-group">
+                            <button type="button" class="btn btn-default" (click)="onUpVote()" [disabled]="voteUp"
+                                [ngClass]="voteUp? 'active': ' '">+</button>
+                            <button type="button" class="btn btn-default" (click)="onDownVote()" [disabled]="voteDown"
+                                [ngClass]="voteDown? 'active' :' '">-</button>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="btn-group">
+                        <button *ngIf="isEditable" type="button" class="btn btn-info" [routerLink]="['../edit',id]">
+                            Edit
+                        </button>
+                        <button *ngIf="isEditable" type="button" class="btn btn-danger" (click)="deleteCandidate()"
+                            [routerLink]="['/candidates']">
+                            Delete
+                        </button>
+                        <button *ngIf="isEditable && !candidateToDisplay.ispublic" type="button" class="btn btn-default"
+                            (click)="publishCandidate()">
+                            Publish
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-md-8 ">

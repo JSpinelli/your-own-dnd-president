@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <h3>Image Information</h3>
+            <label for="labels">Labels</label>
+            <div *ngFor="let label of apiResponse.imageResponse.labels; let i = index">
+                <ul>{{label.description}} | {{label.score}}</ul>
+            </div>
+            <label for="faces">Faces</label>
+            <div *ngFor="let face of apiResponse.imageResponse.faces; let i = index">
+                <ul>Joy: {{face.joy}}</ul>
+                <ul>Sorrow: {{face.joy}}</ul>
+                <ul>Anger: {{face.joy}}</ul>
+                <ul>Surprise: {{face.joy}}</ul>
+                <ul>Headwear: {{face.joy}}</ul>
+            </div>
+            <label for="safe">Safe Rating</label>
+            <div>
+                <ul>Adult: {{apiResponse.imageResponse.safe.adult}}</ul>
+                <ul>Spoof: {{apiResponse.imageResponse.safe.spoof}}</ul>
+                <ul>Medical: {{apiResponse.imageResponse.safe.medical}}</ul>
+                <ul>Violence: {{apiResponse.imageResponse.safe.violence}}</ul>
+                <ul>Racy: {{apiResponse.imageResponse.safe.racy}}</ul>
+            </div>
+            <label for="web">Web</label>
+            <br>
+            <label for="web_ent">Entities</label>
+            <div *ngFor="let entitie of apiResponse.imageResponse.web.entities; let i = index">
+                <ul>Description: {{entitie.description}} | Score: {{entitie.score}}</ul>
+            </div>
+            <label for="web_match">Full Matching Images</label>
+            <div *ngFor="let match of apiResponse.imageResponse.web.fullMatchingImages; let i = index">
+                <img src="{{match.url}}" style="max-height: 50px;">
+            </div>
+        </div>
+        <div class="row">
+            <h3>Text Info</h3>
+            <label for="labels">Document Sentiment</label>
+            <p>Magnitude: {{apiResponse.naturalResponse.documentSentiment.magnitude}} | Score: {{apiResponse.naturalResponse.documentSentiment.score}} </p>
+            <div *ngFor="let sentence of apiResponse.naturalResponse.sentences; let i = index">
+                <ul>Sentence: {{sentence.text.content}}</ul>
+                <ul>Magnitude: {{sentence.sentiment.magnitude}} | Score: {{sentence.sentiment.score}} </ul>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" [routerLink]="['/candidates']"> Next</button>
+    </div>
+</div>
